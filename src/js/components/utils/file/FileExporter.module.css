@@ -1,0 +1,29 @@
+.main{
+    display: flex;
+    flex-wrap: wrap;
+    width:100%;
+    height:100%;
+    background-color: #FAF4E1;
+    justify-content: flex-start;
+    align-content: flex-start;
+    flex-direction: column;
+}
+
+
+.file{
+    border-radius: 5px;
+    border:1px solid #E8E7E5;
+    background-color:#FAF4E1;
+    height:2.5rem;
+    line-height: 2.5rem;
+    margin-top: 5px;
+
+}
+
+
+
+.file:hover{
+    background-color:#D4BBA7;
+    cursor:pointer;
+}
+

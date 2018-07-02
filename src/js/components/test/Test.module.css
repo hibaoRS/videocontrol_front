@@ -1,0 +1,38 @@
+.main {
+    display: flex;
+    height: 70vh;
+    width: 100vw;
+    background-color: red;
+    flex-wrap:wrap;
+    flex-direction:column;
+}
+
+.left {
+    height: 100%;
+    width: 50vw;
+    background-color: green;
+}
+
+.right1 {
+    height: 35vh;
+    width: 25vw;
+    background-color: burlywood;
+}
+.right2 {
+    height: 35vh;
+    width: 25vw;
+    background-color: saddlebrown;
+}
+
+.right3 {
+    height: 35vh;
+    width: 25vw;
+    background-color: blueviolet;
+}
+
+.right4 {
+    height: 35vh;
+    width: 25vw;
+    background-color: yellow;
+}
+

@@ -1,0 +1,32 @@
+<div>
+                                <span>系统分辨率 <Popover content={(
+                                    <div>
+                                        <p>推荐使用720P或1080P（HDMI输出仅在这两个模式下生效）</p>
+                                        改变系统分辨率后需要重启系统才能生效
+                                    </div>
+                                )} placement="right">
+                                        <Icon className={styles.icon}
+                                              type="question-circle-o"/>
+                                    </Popover></span>
+    <div>
+        <Select disabled={this.state.disabled}
+                value={this.state.configs ? this.state.configs.system.display_mode + "" : ""}
+        style={{width: 220}}
+        onChange={val => {
+        let configs = this.state.configs
+        configs.system.display_mode = val
+        this.setState({configs})
+        }}>
+        {this.state.configOptions ? Object.entries(this.state.configOptions.system.display_mode).map((entry, index) => (
+        <Option key={entry[1]}>{entry[0]}</Option>
+        )) : ""}
+        </Select>
+    </div>
+</div>
+
+
+
+
+
+
+

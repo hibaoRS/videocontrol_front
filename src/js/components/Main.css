@@ -1,0 +1,27 @@
+video::-webkit-media-controls-play-button {
+    display: none;
+
+}
+
+video::-webkit-media-controls-timeline {
+    display: none;
+}
+
+video::-webkit-media-controls-current-time-display {
+    display: none;
+}
+
+video::-internal-media-controls-download-button {
+    display: none;
+
+}
+
+
+
+video::-webkit-media-controls-fullscreen-button {
+    position: absolute;
+    right: 0.2rem;
+}
+
+video::-webkit-media-controls-panel {
+}

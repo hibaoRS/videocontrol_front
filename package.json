@@ -1,0 +1,36 @@
+{
+  "name": "videocontrol",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@antv/data-set": "^0.8.5",
+    "antd": "^3.0.1",
+    "axios": "^0.17.1",
+    "babel-polyfill": "^6.26.0",
+    "bootstrap": "^3.3.7",
+    "flv.js": "^1.4.2",
+    "jquery": "^3.3.1",
+    "moment": "^2.19.4",
+    "react": "^16.2.0",
+    "react-bootstrap": "^0.32.1",
+    "react-dom": "^16.2.0",
+    "react-infinite-scroll-component": "^4.1.0",
+    "react-redux": "^5.0.6",
+    "react-router-dom": "^4.2.2",
+    "react-scripts-cssmodules": "1.0.171",
+    "redux": "^3.7.2",
+    "video-react": "^0.9.4",
+    "viser-react": "^2.0.7"
+  },
+  "scripts": {
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "babel-plugin-import": "^1.6.3",
+    "react-app-rewire-less": "^2.1.0",
+    "react-app-rewired": "^1.4.0"
+  }
+}

@@ -1,0 +1,24 @@
+.title{
+    background: #fff;
+    color: #333;
+    margin-bottom: 10px;
+    font-size: 20px;
+    text-transform: capitalize;
+    width: calc(100% - 460px);
+}
+
+.container{
+    margin-top:2rem;
+}
+
+.control{
+    position: absolute;
+    right: 20px;
+}
+
+.buttons{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+}
+

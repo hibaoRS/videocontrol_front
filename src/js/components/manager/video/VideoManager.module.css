@@ -1,0 +1,30 @@
+.main {
+    margin-top: 4px;
+    /*display: flex;*/
+    /*flex-direction: column;*/
+    /*align-items: center;*/
+    background-color: #C0C0C0;
+}
+
+.videoContainer {
+    width: 100rem;
+    margin: auto;
+
+}
+
+.videoContainer > video {
+    object-fit: fill;
+    width: 100%;
+    height: 100%;
+}
+
+.fileContainer {
+    width: 100rem;
+    font-size: 1.8rem;
+    background-color: #FFFFFF;
+    margin: auto;
+
+}
+
+
+

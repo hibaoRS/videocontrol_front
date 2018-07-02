@@ -1,0 +1,64 @@
+.container {
+    justify-content: center;
+    display: flex;
+    background-color: #F1F1F1
+}
+
+.settings {
+    width: 600px;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 60px;
+
+}
+
+.setting {
+    padding-bottom: 5px;
+}
+
+.title {
+    background-color: #F1F1F1;
+    padding: 16px 0;
+}
+
+.content {
+    background-color: #FFFFFF;
+    box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.14), 0 1px 8px 0 rgba(0, 0, 0, 0.12), 0 3px 3px -2px rgba(0, 0, 0, 0.4);
+}
+
+.content > div {
+    border-bottom: 1px solid #F0F0F0;
+    justify-content: space-between;
+    display: flex;
+    padding: 20px 20px;
+}
+
+.control {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+
+}
+
+.icon {
+    font-size: 1.7rem;
+    color: #FFCC00;
+    margin-left: 0.4rem;
+
+}
+
+.icon:hover {
+    cursor: pointer;
+}
+
+.anchor {
+    opacity: 0;
+    -webkit-transition: opacity .3s ease;
+    transition: opacity .3s ease;
+    margin-left: 3px;
+    font-size: 2rem;
+}
+
+.anchor:hover {
+    opacity: 1;
+}
