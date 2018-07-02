@@ -35,6 +35,7 @@ class Main extends React.Component {
 
         window.$ = $
         this.state = {
+            cameraPresetMode: false,
             menuExpand: false,
             monitor_styles: [],
             mainPanel: [],
@@ -549,13 +550,57 @@ class Main extends React.Component {
                                 width: "72px",
                                 alignItems: "center"
                             }}>
-                                <Icon className={styles.cameraControlButton} type="caret-up"/>
+                                <Icon
+                                    onMouseDown={this.startCameraMove.bind(this, "2")}
+                                    onMouseUp={this.stopCameraMove}
+                                    className={styles.cameraControlButton}
+                                    type="caret-up"/>
                                 <div>
-                                    <Icon className={styles.cameraControlButton} type="caret-left"/>
-                                    <Icon className={styles.cameraControlButton} type="reload"/>
-                                    <Icon className={styles.cameraControlButton} type="caret-right"/>
+                                    <Icon className={styles.cameraControlButton}
+                                          onMouseDown={this.startCameraMove.bind(this, "4")}
+                                          onMouseUp={this.stopCameraMove}
+                                          type="caret-left"/>
+                                    <Icon className={styles.cameraControlButton}
+                                          onClick={() => {
+                                              axios.get(window.serverUrl + "main.php", {
+                                                  params: {
+                                                      action: "cameraControl",
+                                                      addr: this.state.camera_control.currCamera,
+                                                      cmd: "0",
+                                                      value: "0",
+                                                  }
+                                              }).then(res => {
+                                                  if (res.data.code) {
+                                                      axios.get(window.serverUrl + "main.php", {
+                                                          params: {
+                                                              action: "setCameraValue",
+                                                              camera: this.state.camera_control.currCamera,
+                                                              zoom_speed: 2,
+                                                              focal_length: 0,
+                                                          }
+                                                      }).then(res => {
+                                                          if (res.data.code) {
+                                                              let camera_control = this.state.camera_control;
+                                                              camera_control[this.state.camera_control.currCamera].zoom_speed = 2;
+                                                              camera_control[this.state.camera_control.currCamera].focal_length = 0;
+                                                              this.setState({camera_control})
+                                                          }
+                                                      })
+                                                  } else {
+                                                      message.error(res.data.data);
+                                                  }
+                                              }).catch(error => console.log(error));
+                                          }}
+                                          type="reload"/>
+                                    <Icon className={styles.cameraControlButton}
+                                          onMouseDown={this.startCameraMove.bind(this, "5")}
+                                          onMouseUp={this.stopCameraMove}
+                                          type="caret-right"/>
                                 </div>
-                                <Icon className={styles.cameraControlButton} type="caret-down"/>
+                                <Icon className={styles.cameraControlButton}
+                                      onMouseDown={this.startCameraMove.bind(this, "3")}
+                                      onMouseUp={this.stopCameraMove}
+                                      type="caret-down"/>
                             </div>
 
                             <div style={{
@@ -566,11 +611,38 @@ class Main extends React.Component {
                             }}>
                                 <div>
                                     <span>&nbsp;摄&nbsp;像&nbsp;头&nbsp; </span>
-                                    <Select size={"small"} value={"1"} style={{marginLeft: "2px", width: "93px"}}>
-                                        <Option key="1">学生特写</Option>
-                                        <Option key="2">教师特写</Option>
-                                        <Option key="3">学生全景</Option>
-                                        <Option key="4">教师全景</Option>
+                                    <Select size={"small"}
+                                            value={this.state.configs ? this.state.camera_control.currCamera : ""}
+                                            style={{marginLeft: "2px", width: "93px"}}
+                                            onChange={val => {
+                                                axios.get(window.serverUrl + "main.php", {
+                                                    params: {
+                                                        action: "setConfigValue",
+                                                        configKey: "camera_control",
+                                                        val: val,
+                                                        key: "currCamera"
+                                                    }
+                                                }).then(res => {
+                                                    if (res.data.code) {
+                                                        this.setState({
+                                                            camera_control: {
+                                                                ...this.state.camera_control,
+                                                                currCamera: val
+                                                            }
+                                                        })
+                                                    } else {
+                                                        message.error("操作失败")
+                                                    }
+                                                }).catch(e => console.log(e))
+                                            }}>
+                                        <Option
+                                            key={this.state.configs ? this.state.configs.camera.student_closeUp : "1"}>学生特写</Option>
+                                        <Option
+                                            key={this.state.configs ? this.state.configs.camera.teacher_closeUp : "2"}>教师特写</Option>
+                                        <Option
+                                            key={this.state.configs ? this.state.configs.camera.student_panorama : "3"}>学生全景</Option>
+                                        <Option
+                                            key={this.state.configs ? this.state.configs.camera.teacher_panorama : "4"}>教师全景</Option>
                                     </Select>
                                 </div>
                                 <div style={{
@@ -580,6 +652,37 @@ class Main extends React.Component {
                                 }}>
                                     <span>焦距大小</span>
                                     <Slider max={1023}
+                                            value={this.state.camera_control
+                                                ? this.state.camera_control[this.state.camera_control.currCamera].focal_length
+                                                : 0}
+                                            onChange={val => {
+                                                let camera_control = this.state.camera_control;
+                                                camera_control[this.state.camera_control.currCamera].focal_length = val;
+                                                this.setState({camera_control})
+                                            }}
+                                            onAfterChange={(val) => {
+                                                axios.get(window.serverUrl + "main.php", {
+                                                    params: {
+                                                        action: "cameraControl",
+                                                        addr: this.state.camera_control.currCamera,
+                                                        cmd: "6",
+                                                        value: val + "",
+                                                    }
+                                                }).then(res => {
+                                                    if (res.data.code) {
+                                                        axios.get(window.serverUrl + "main.php", {
+                                                            params: {
+                                                                action: "setCameraValue",
+                                                                camera: this.state.camera_control.currCamera,
+                                                                focal_length: val,
+                                                                zoom_speed: this.state.camera_control[this.state.camera_control.currCamera].zoom_speed,
+                                                            }
+                                                        })
+                                                    } else {
+                                                        message.error(res.data.data);
+                                                    }
+                                                }).catch(error => console.log(error));
+                                            }}
                                             style={{width: "90px", margin: "0", marginLeft: "8px"}}/>
                                 </div>
                                 <div style={{
@@ -587,25 +690,115 @@ class Main extends React.Component {
                                 }}>
                                     <span>变焦速度</span>
                                     <Slider min={2} max={7}
+                                            value={this.state.camera_control
+                                                ? this.state.camera_control[this.state.camera_control.currCamera].zoom_speed
+                                                : 2}
+                                            onChange={val => {
+                                                let camera_control = this.state.camera_control;
+                                                camera_control[this.state.camera_control.currCamera].zoom_speed = val;
+                                                this.setState({camera_control})
+                                            }}
+                                            onAfterChange={(val) => {
+                                                axios.get(window.serverUrl + "main.php", {
+                                                    params: {
+                                                        action: "cameraControl",
+                                                        addr: this.state.camera_control.currCamera,
+                                                        cmd: "7",
+                                                        value: val + "",
+                                                    }
+                                                }).then(res => {
+                                                    if (res.data.code) {
+                                                        axios.get(window.serverUrl + "main.php", {
+                                                            params: {
+                                                                action: "setCameraValue",
+                                                                camera: this.state.camera_control.currCamera,
+                                                                zoom_speed: val,
+                                                                focal_length: this.state.camera_control[this.state.camera_control.currCamera].focal_length,
+                                                            }
+                                                        })
+                                                    } else {
+                                                        message.error(res.data.data);
+                                                    }
+                                                }).catch(error => console.log(error));
+                                            }}
+
                                             style={{width: "90px", margin: "0", marginLeft: "8px"}}/>
                                 </div>
-
                             </div>
-
 
                             <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
                                 <div>
-                                    <Button size={"small"} shape="circle">+</Button>
+                                    <Button
+                                        style={{
+                                            color: this.state.cameraPresetMode ? "red" : "",
+                                            borderColor: this.state.cameraPresetMode ? "red" : ""
+                                        }}
+                                        onClick={() => this.setState({cameraPresetMode: !this.state.cameraPresetMode})}
+                                        size={"small"} shape="circle">+</Button>
                                 </div>
                                 <div>
-                                    <Button size={"small"} shape="circle">1</Button>
-                                    <Button size={"small"} shape="circle">2</Button>
-                                    <Button size={"small"} shape="circle">3</Button>
+                                    <Button
+                                        onClick={this.setCameraPreset.bind(this, "0")}
+                                        style={{
+                                            color: this.state.cameraPresetMode ? "red" : "",
+                                            borderColor: this.state.cameraPresetMode ? "red" : ""
+                                        }}
+                                        size={"small"}
+                                        shape="circle">
+                                        1
+                                    </Button>
+                                    <Button
+                                        onClick={this.setCameraPreset.bind(this, "1")}
+                                        style={{
+                                            color: this.state.cameraPresetMode ? "red" : "",
+                                            borderColor: this.state.cameraPresetMode ? "red" : ""
+                                        }}
+                                        size={"small"}
+                                        shape="circle">
+                                        2
+                                    </Button>
+                                    <Button
+                                        onClick={this.setCameraPreset.bind(this, "2")}
+                                        style={{
+                                            color: this.state.cameraPresetMode ? "red" : "",
+                                            borderColor: this.state.cameraPresetMode ? "red" : ""
+                                        }}
+                                        size={"small"}
+                                        shape="circle">
+                                        3
+                                    </Button>
                                 </div>
                                 <div>
-                                    <Button size={"small"} shape="circle">4</Button>
-                                    <Button size={"small"} shape="circle">5</Button>
-                                    <Button size={"small"} shape="circle">6</Button>
+                                    <Button
+                                        onClick={this.setCameraPreset.bind(this, "3")}
+                                        style={{
+                                            color: this.state.cameraPresetMode ? "red" : "",
+                                            borderColor: this.state.cameraPresetMode ? "red" : ""
+                                        }}
+                                        size={"small"}
+                                        shape="circle">
+                                        4
+                                    </Button>
+                                    <Button
+                                        onClick={this.setCameraPreset.bind(this, "4")}
+                                        style={{
+                                            color: this.state.cameraPresetMode ? "red" : "",
+                                            borderColor: this.state.cameraPresetMode ? "red" : ""
+                                        }}
+                                        size={"small"}
+                                        shape="circle">
+                                        5
+                                    </Button>
+                                    <Button
+                                        onClick={this.setCameraPreset.bind(this, "5")}
+                                        style={{
+                                            color: this.state.cameraPresetMode ? "red" : "",
+                                            borderColor: this.state.cameraPresetMode ? "red" : ""
+                                        }}
+                                        size={"small"}
+                                        shape="circle">
+                                        6
+                                    </Button>
                                 </div>
                             </div>
                         </div>
@@ -651,7 +844,6 @@ class Main extends React.Component {
 
                             <div>
                                 <span>课程分段时长</span>
-
 
                                 <InputNumber disabled={this.state.recording == 1}
                                              style={{width: "60px"}}
@@ -800,7 +992,6 @@ class Main extends React.Component {
     }
 
     handleRecord = () => {
-
         if (this.onHandleRecord) {
             return;
         }
@@ -809,11 +1000,10 @@ class Main extends React.Component {
 
         if (this.state.recording) {
             axios.get(window.serverUrl + "main.php", {params: {action: "stopRecord"}}).then(res => {
-
                 if (res.data.code) {
                     this.getSystemState();
                 } else {
-                    message.error(res.data.data);
+                    message.error("操作失败");
                 }
             }).catch(error => console.log(error));
         } else {
@@ -826,7 +1016,7 @@ class Main extends React.Component {
                 if (res.data.code) {
                     this.getSystemState();
                 } else {
-                    message.error(res.data.data);
+                    message.error("操作失败");
                 }
             }).catch(error => console.log(error));
         }
@@ -850,7 +1040,7 @@ class Main extends React.Component {
                 if (res.data.code) {
                     this.getSystemState();
                 } else {
-                    message.error(res.data.data);
+                    message.error("操作失败");
                 }
             }).catch(error => console.log(error));
         } else {
@@ -864,7 +1054,7 @@ class Main extends React.Component {
                     // this.refresh();
                     this.getSystemState();
                 } else {
-                    message.error(res.data.data);
+                    message.error("操作失败");
                 }
             }).catch(error => console.log(error));
         }
@@ -912,7 +1102,7 @@ class Main extends React.Component {
                 if (res.data.code) {
                     this.setState({autoSwitch: 0})
                 } else {
-                    message.error(res.data.data);
+                    message.error("操作失败");
                 }
             }).catch(error => console.log(error));
         } else {
@@ -920,7 +1110,7 @@ class Main extends React.Component {
                 if (res.data.code) {
                     this.setState({autoSwitch: 1})
                 } else {
-                    message.error(res.data.data);
+                    message.error("操作失败");
                 }
             }).catch(error => console.log(error));
         }
@@ -950,6 +1140,88 @@ class Main extends React.Component {
     handleMenuExpand = () => {
         this.setState({menuExpand: !this.state.menuExpand})
     }
+
+    moveCamera = (cmd, cameraSpeed) => {
+        axios.get(window.serverUrl + "main.php", {
+            params: {
+                action: "cameraControl",
+                addr: this.state.camera_control.currCamera,
+                cmd: cmd,
+                value: cameraSpeed + "",
+            }
+        }).then(res => {
+            if (!res.data.code) {
+                message.error(res.data.data);
+            }
+        }).catch(error => console.log(error));
+    }
+
+
+    startCameraMove = cmd => {
+        let cameraSpeed = 10;
+        if (this.startCameraMoveInterval) {
+            clearInterval(this.startCameraMoveInterval);
+        }
+        //先立马调用一次
+        this.moveCamera(cmd, cameraSpeed);
+        this.startCameraMoveInterval = setInterval(() => {
+            if (cameraSpeed < 18) {
+                cameraSpeed += 1;
+            }
+            this.moveCamera(cmd, cameraSpeed);
+        }, 400)
+    };
+
+    stopCameraMove = () => {
+        clearInterval(this.startCameraMoveInterval);
+        axios.get(window.serverUrl + "main.php", {
+            params: {
+                action: "cameraControl",
+                addr: this.state.camera_control.currCamera,
+                cmd: "1",
+                value: "0",
+            }
+        }).then(res => {
+            if (!res.data.code) {
+                message.error(res.data.data);
+            }
+        }).catch(error => console.log(error));
+    }
+
+
+    setCameraPreset = value => {
+        //设置预置位
+        if (this.state.cameraPresetMode) {
+            axios.get(window.serverUrl + "main.php", {
+                params: {
+                    action: "cameraControl",
+                    addr: this.state.camera_control.currCamera,
+                    cmd: "8",
+                    value: value,
+                }
+            }).then(res => {
+                if (!res.data.code) {
+                    message.error(res.data.data);
+                }
+            }).catch(error => console.log(error));
+        }
+        //加载预置位
+        else {
+            axios.get(window.serverUrl + "main.php", {
+                params: {
+                    action: "cameraControl",
+                    addr: this.state.camera_control.currCamera,
+                    cmd: "9",
+                    value: value,
+                }
+            }).then(res => {
+                if (!res.data.code) {
+                    message.error(res.data.data);
+                }
+            }).catch(error => console.log(error));
+        }
+    }
+
 }
 
 const mapDispatchToProps = dispatch => {

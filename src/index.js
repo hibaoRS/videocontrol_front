@@ -15,12 +15,12 @@ import {LocaleProvider} from "antd";
 
 axios.defaults.withCredentials = true
 
-window.serverUrl = "http://127.0.0.1/videocontrol/";
+// window.serverUrl = "http://127.0.0.1/videocontrol/";
 // window.serverUrl = "http://192.168.43.242/videocontrol/";
 // window.serverUrl = "http://192.168.1.100/videocontrol/";
 // window.serverUrl = "http://192.168.1.222/videocontrol/";
 // window.serverUrl = "http://192.168.2.162/videocontrol/";
-// window.serverUrl = "/videocontrol/";
+window.serverUrl = "/videocontrol/";
 
 ReactDOM.render(
     // <Reflv

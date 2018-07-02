@@ -12,6 +12,8 @@ const {Link} = Anchor;
 
 class Setting extends React.Component {
 
+    selectWidth = 200
+
     state = ({
         configs: null,
         configOptions: null,
@@ -116,7 +118,7 @@ class Setting extends React.Component {
                                 <div>
                                     <Select disabled={this.state.disabled}
                                             value={this.state.configs ? this.state.configs.video.size_type + "" : ""}
-                                            style={{width: 220}}
+                                            style={{width: this.selectWidth}}
                                             onChange={val => {
                                                 let configs = this.state.configs
                                                 configs.video.size_type = val
@@ -134,7 +136,7 @@ class Setting extends React.Component {
                                 <div>
                                     <Select disabled={this.state.disabled}
                                             value={this.state.configs ? this.state.configs.video.norm_type + "" : ""}
-                                            style={{width: 220}}
+                                            style={{width: this.selectWidth}}
                                             onChange={val => {
                                                 let configs = this.state.configs
                                                 configs.video.norm_type = val
@@ -161,7 +163,7 @@ class Setting extends React.Component {
                                 <div>
                                     <Select disabled={this.state.disabled}
                                             value={this.state.configs ? this.state.configs.video.rc_type + "" : ""}
-                                            style={{width: 220}}
+                                            style={{width: this.selectWidth}}
                                             onChange={val => {
                                                 let configs = this.state.configs
                                                 configs.video.rc_type = val
@@ -195,7 +197,7 @@ class Setting extends React.Component {
                                 <div>
                                     <Select disabled={this.state.disabled}
                                             value={this.state.configs ? this.state.configs.video.bitrate_type + "" : ""}
-                                            style={{width: 220}}
+                                            style={{width: this.selectWidth}}
                                             onChange={val => {
                                                 let configs = this.state.configs
                                                 configs.video.bitrate_type = val + ""
@@ -223,7 +225,7 @@ class Setting extends React.Component {
                                 <div>
                                     <Select disabled={this.state.disabled}
                                             value={this.state.configs ? this.state.configs.video.adv7842_type + "" : ""}
-                                            style={{width: 220}}
+                                            style={{width: this.selectWidth}}
                                             onChange={val => {
                                                 let configs = this.state.configs
                                                 configs.video.adv7842_type = val
@@ -248,7 +250,7 @@ class Setting extends React.Component {
                                 <div>
                                     <Select disabled={this.state.disabled}
                                             value={this.state.configs ? this.state.configs.audio.samplerate + "" : ""}
-                                            style={{width: 220}}
+                                            style={{width: this.selectWidth}}
                                             onChange={val => {
                                                 let configs = this.state.configs
                                                 configs.audio.samplerate = val
@@ -266,7 +268,7 @@ class Setting extends React.Component {
                                 <div>
                                     <Select disabled={this.state.disabled}
                                             value={this.state.configs ? this.state.configs.audio.channels + "" : ""}
-                                            style={{width: 220}}
+                                            style={{width: this.selectWidth}}
                                             onChange={val => {
                                                 let configs = this.state.configs
                                                 configs.audio.channels = val
@@ -300,7 +302,7 @@ class Setting extends React.Component {
                                 <div>
                                     <Select disabled={this.state.disabled}
                                             value={this.state.configs ? this.state.configs.serial.camera_serial_dev + "" : ""}
-                                            style={{width: 220}}
+                                            style={{width: this.selectWidth}}
                                             onChange={val => {
                                                 if (val == this.state.configs.serial.serial_dev) {
                                                     message.warn("摄像头串口设备和跟踪主机串口设备不可相同");
@@ -328,7 +330,7 @@ class Setting extends React.Component {
                                 <div>
                                     <Select disabled={this.state.disabled}
                                             value={this.state.configs ? this.state.configs.serial.serial_dev + "" : ""}
-                                            style={{width: 220}}
+                                            style={{width: this.selectWidth}}
                                             onChange={val => {
                                                 if (val == this.state.configs.serial.camera_serial_dev) {
                                                     message.warn("跟踪主机串口设备和摄像头串口设备不可相同");
@@ -350,13 +352,97 @@ class Setting extends React.Component {
                                 <div>
                                     <Select disabled={this.state.disabled}
                                             value={this.state.configs ? this.state.configs.serial.bitrate_type + "" : ""}
-                                            style={{width: 220}}
+                                            style={{width: this.selectWidth}}
                                             onChange={val => {
                                                 let configs = this.state.configs
                                                 configs.serial.bitrate_type = val
                                                 this.setState({configs})
                                             }}>
                                         {this.state.configOptions ? Object.entries(this.state.configOptions.serial.bitrate_type).map((entry, index) => (
+                                            <Option key={entry[1]}>{entry[0]}</Option>
+                                        )) : ""}
+                                    </Select>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+
+                    <div className={styles.setting} id={"camera"}>
+                        <div className={styles.title}>摄像头控制设置<a href={"#camera"}
+                                                                className={styles.anchor}>#</a></div>
+                        <div className={styles.content}>
+                            <div>
+                                <span>学生特写</span>
+                                <div>
+                                    <Select disabled={this.state.disabled}
+                                            value={this.state.configs ? this.state.configs.camera.student_closeUp + "" : ""}
+                                            style={{width: this.selectWidth}}
+                                            onChange={val => {
+                                                let configs = this.state.configs
+                                                configs.camera.student_closeUp = val
+                                                this.setState({configs})
+                                            }}>
+                                        {this.state.configOptions ? Object.entries(this.state.configOptions.camera.value).map((entry, index) => (
+                                            <Option key={entry[1]}>{entry[0]}</Option>
+                                        )) : ""}
+                                    </Select>
+                                </div>
+                            </div>
+
+
+                            <div>
+                                <span>教师特写</span>
+                                <div>
+                                    <Select disabled={this.state.disabled}
+                                            value={this.state.configs ? this.state.configs.camera.teacher_closeUp + "" : ""}
+                                            style={{width: this.selectWidth}}
+                                            onChange={val => {
+                                                let configs = this.state.configs
+                                                configs.camera.teacher_closeUp = val
+                                                this.setState({configs})
+                                            }}>
+                                        {this.state.configOptions ? Object.entries(this.state.configOptions.camera.value).map((entry, index) => (
+                                            <Option key={entry[1]}>{entry[0]}</Option>
+                                        )) : ""}
+                                    </Select>
+                                </div>
+                            </div>
+
+
+                            <div>
+                                <span>学生全景</span>
+                                <div>
+                                    <Select disabled={this.state.disabled}
+                                            value={this.state.configs ? this.state.configs.camera.student_panorama + "" : ""}
+                                            style={{width: this.selectWidth}}
+                                            onChange={val => {
+                                                let configs = this.state.configs
+                                                configs.camera.student_panorama = val
+                                                this.setState({configs})
+                                            }}>
+                                        {this.state.configOptions ? Object.entries(this.state.configOptions.camera.value).map((entry, index) => (
+                                            <Option key={entry[1]}>{entry[0]}</Option>
+                                        )) : ""}
+                                    </Select>
+                                </div>
+                            </div>
+
+
+                            <div>
+                                <span>教师全景</span>
+                                <div>
+                                    <Select disabled={this.state.disabled}
+                                            value={this.state.configs ? this.state.configs.camera.teacher_panorama + "" : ""}
+                                            style={{width: this.selectWidth}}
+                                            onChange={val => {
+                                                let configs = this.state.configs
+                                                configs.camera.teacher_panorama = val
+                                                this.setState({configs})
+                                            }}>
+                                        {this.state.configOptions ? Object.entries(this.state.configOptions.camera.value).map((entry, index) => (
                                             <Option key={entry[1]}>{entry[0]}</Option>
                                         )) : ""}
                                     </Select>
@@ -382,7 +468,7 @@ class Setting extends React.Component {
                                     </Popover>
                                 </span>
                                 <div>
-                                    <AutoComplete disabled={this.state.disabled} style={{width: 220}}
+                                    <AutoComplete disabled={this.state.disabled} style={{width: this.selectWidth}}
                                                   value={this.state.configs ? this.state.configs.rtmp.server_url : ""}
                                                   onChange={val => {
                                                       let configs = this.state.configs
@@ -419,7 +505,7 @@ class Setting extends React.Component {
                                 <div>
                                     <Select disabled={this.state.disabled}
                                             value={this.state.configs ? this.state.configs.rtmp.size_type + "" : ""}
-                                            style={{width: 220}}
+                                            style={{width: this.selectWidth}}
                                             onChange={val => {
                                                 let configs = this.state.configs
                                                 configs.rtmp.size_type = val
@@ -438,7 +524,7 @@ class Setting extends React.Component {
                                 <div>
                                     <Select disabled={this.state.disabled}
                                             value={this.state.configs ? this.state.configs.rtmp.bitrate_type + "" : ""}
-                                            style={{width: 220}}
+                                            style={{width: this.selectWidth}}
                                             onChange={val => {
                                                 let configs = this.state.configs
                                                 configs.rtmp.bitrate_type = val
@@ -466,7 +552,7 @@ class Setting extends React.Component {
                                 <div>
                                     <Select disabled={this.state.disabled}
                                             value={this.state.configs ? this.state.configs.main_screen.size_type + "" : ""}
-                                            style={{width: 220}}
+                                            style={{width: this.selectWidth}}
                                             onChange={val => {
                                                 let configs = this.state.configs
                                                 configs.main_screen.size_type = val
@@ -601,7 +687,8 @@ class Setting extends React.Component {
                                                     val = val ? 1 : 0;
                                                     axios.get(window.serverUrl + "main.php", {
                                                         params: {
-                                                            action: "setMainPanel",
+                                                            action: "setConfigValue",
+                                                            configKey: "mainPanel",
                                                             val: val,
                                                             key: "enabled"
                                                         }
@@ -645,8 +732,8 @@ class Setting extends React.Component {
                                                    }
                                                    axios.get(window.serverUrl + "main.php", {
                                                        params: {
-                                                           action: "setMainPanel",
-                                                           val: width,
+                                                           action: "setConfigValue",
+                                                           configKey: "mainPanel", val: width,
                                                            key: "width"
 
                                                        }
@@ -688,8 +775,8 @@ class Setting extends React.Component {
                                                    }
                                                    axios.get(window.serverUrl + "main.php", {
                                                        params: {
-                                                           action: "setMainPanel",
-                                                           val: height,
+                                                           action: "setConfigValue",
+                                                           configKey: "mainPanel", val: height,
                                                            key: "height"
 
                                                        }
@@ -749,7 +836,8 @@ class Setting extends React.Component {
                         <Link href="#video" title="视频录制设置"/>
                         <Link href="#audio" title="音频设置"/>
                         <Link href="#serial" title="串口设置"/>
-                        <Link href="#rtmp" title="RTMP直播设置"/>
+                        <Link href="#camera" title="摄像头控制设置"/>
+                        <Link href="#rtmp" title=" RTMP&nbsp;直播设置"/>
                         <Link href="#main_screen" title="本地监视器设置"/>
                         <Link href="#misc" title="其他设置"/>
                         {this.state.showControlAppManage === 1 ? (
@@ -761,10 +849,28 @@ class Setting extends React.Component {
         )
     }
 
-    u
+    object2Array = obj => {
+        let result = [];
+        for (let k in obj) {
+            result.push(obj[k])
+        }
+        return result
+    }
+
     handleSave = () => {
+
+        //判断摄像头设置是否相同
+        if (!this.isAllDiff(this.object2Array(this.state.configs.camera))) {
+            window.location.href = "/setting#camera";
+            message.warn("摄像头控制中的所有取值必须不相同");
+            return;
+        }
+
+
         const hide = message.loading('保存配置中...', 0);
         this.setState({disabled: true});
+
+        console.log(this.state.configs)
 
         axios.get(window.serverUrl + "main.php", {
             params: {
@@ -846,6 +952,22 @@ class Setting extends React.Component {
         }
 
     }
+
+    isAllDiff = arr => {
+        if (!(arr instanceof Array)) {
+            return true;
+        }
+        for (let i = 0; i < arr.length; ++i) {
+            let val = arr[i];
+            for (let j = (i + 1); j < arr.length; ++j) {
+                if (val == arr[j]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
 }
 
 const mapStateToProps = state => {
