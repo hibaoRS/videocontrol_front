@@ -12,7 +12,7 @@ import VideoManager from "./js/components/manager/video/VideoManager";
 import SystemState from "./js/components/manager/systemState/SystemState";
 import UserManager from "./js/components/manager/user/UserManager";
 import Login from "./js/components/login_logout/Login";
-import {Icon, Layout, Menu} from "antd";
+import {Alert, Icon, Layout, Menu} from "antd";
 import AppManage from "./js/components/manager/appManage/AppManage";
 import axios from "axios/index";
 import {initIsShowAppManage} from "./js/reducers/AppReducer";
@@ -86,6 +86,17 @@ class App extends React.Component {
             <Layout className={styles.layout} id={"video"}>
                 <Header style={{display: !!this.props.user ? "block" : "none"}} className={styles.header}>
                     <div className={styles.logo}/>
+                    {this.props.activate!==1 ? (<Alert
+                        message="设备未激活，仅部分功能可用"
+                        type="warning"
+                        closeText="前往激活页面"
+                        style={{
+                            zIndex: 1000, float: "right", width: "300px", height: "3.5rem", margin: "0 2rem 0 0"
+                        }}
+                        onClose={() => {
+                            this.props.history.push("/state");
+                        }}
+                    />) : ""}
                     <Menu theme={"light"}
                           selectedKeys={[this.props.module]}
                           mode="horizontal"
@@ -126,6 +137,7 @@ class App extends React.Component {
                             <span>应用管理</span>
                         </Menu.Item>) : ""}
                     </Menu>
+
                 </Header>
 
                 <Content>
@@ -143,7 +155,8 @@ const mapStateToProps = state => {
     return {
         module: state.app.module,
         user: state.user.user,
-        isShowAppManage: state.app.isShowAppManage
+        isShowAppManage: state.app.isShowAppManage,
+        activate: state.app.activate,
     }
 }
 

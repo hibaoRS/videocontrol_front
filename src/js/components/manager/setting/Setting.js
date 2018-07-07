@@ -14,12 +14,6 @@ class Setting extends React.Component {
 
     selectWidth = 200
 
-    state = ({
-        configs: null,
-        configOptions: null,
-        disabled: false,
-        showControlAppManage: 0,
-    })
 
     uploadProps = {
         accept: "application/zip",
@@ -42,6 +36,16 @@ class Setting extends React.Component {
 
     constructor(props) {
         super()
+
+        this.state = {
+            disabled: props.activate!==1,
+            configs: null,
+            configOptions: null,
+            showControlAppManage: 0,
+        }
+
+        console.log(props.activate!==1)
+        console.log(props.activate)
 
 
         if (!props.user) {
@@ -973,7 +977,8 @@ class Setting extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
-        isShowAppManage: state.app.isShowAppManage
+        isShowAppManage: state.app.isShowAppManage,
+        activate: state.app.activate
     }
 }
 

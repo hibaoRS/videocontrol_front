@@ -4,18 +4,16 @@ import {Chart, Tooltip, Axis, Area, Line, StackBar, Coord, Legend} from 'viser-r
 import moment from "moment"
 import {connect} from "react-redux";
 import styles from "./SystemState.module.css"
-import {getUser} from "../../../mapStateToProps/User";
-import {Affix, Button, Popconfirm} from "antd";
+import {Affix, Alert, Button, Input, Popconfirm} from "antd";
 import {message} from "antd/lib/index";
 import {userLogout} from "../../../reducers/UserReducer";
-import {setCurrModule} from "../../../reducers/AppReducer";
+import {setActivateState, setCurrModule} from "../../../reducers/AppReducer";
 import IpInfo from "./IpInfo";
 import TimeSetting from "./TimeSetting";
 
 const DataSet = require('@antv/data-set');
 
 class SystemState extends React.Component {
-
 
     constructor(props) {
         super();
@@ -24,6 +22,7 @@ class SystemState extends React.Component {
             memoryData: [],
             memoryTotal: "",
             memoryUsed: "",
+            activateCode: "",
             devicesData: []
         }
 
@@ -102,7 +101,7 @@ class SystemState extends React.Component {
             size = size * 1024;
         }
 
-        return Math.round(size*100)/100;
+        return Math.round(size * 100) / 100;
     }
 
 
@@ -114,7 +113,7 @@ class SystemState extends React.Component {
                 for (let name in data) {
                     let all = this.convertToG(data[name].all);
                     let used = this.convertToG(data[name].use);
-                    devices.push({name, all, "已使用": used, "未使用": Math.round((all - used)*100)/100})
+                    devices.push({name, all, "已使用": used, "未使用": Math.round((all - used) * 100) / 100})
                 }
 
                 const dv = new DataSet.View().source(devices);
@@ -141,6 +140,59 @@ class SystemState extends React.Component {
     render() {
         return (
             <div className={styles.container}>
+
+                <div className={styles.title}>
+                    设备状态
+                </div>
+                <div style={{marginBottom: "20px"}}>
+
+                    {this.props.activate === 1 ? (<div>
+                        <Alert message="设备已激活，所有功能已开启" type="success"/>
+                    </div>) : (<div>
+                        <Alert message="设备未激活，仅部分功能可用，若需获取完整功能，请联系设备提供商获取设备激活码激活" type="error"/>
+                        <div style={{marginLeft: "15px", marginTop: "5px", display: "flex", alignItems: "center"}}>
+                            <span style={{fontSize: "18px", fontWeight: "600"}}>激活码：</span>
+                            <Input
+                                value={this.state.activateCode}
+                                onChange={(node) => {
+                                    this.setState({activateCode: node.target.value})
+                                }}
+                                style={{
+                                    fontSize: "20px",
+                                    fontWeight: "bold",
+                                    minWidth: "450px",
+                                    width: "450px",
+                                    textAlign: "center",
+                                    margin: "0 10px"
+                                }} maxLength={35}/>
+                            <Button type="primary" onClick={() => {
+                                axios.get(window.serverUrl + "main.php", {
+                                    params: {action: "activate", "activateCode": this.state.activateCode}
+                                }).then(
+                                    ({data}) => {
+                                        if (data.code === 1) {
+                                            message.success(data.data, 5)
+                                            this.props.setActivateState(1);
+                                        } else {
+                                            message.warn(data.data, 3)
+                                        }
+                                    }
+                                );
+                            }}>立即激活</Button>
+                        </div>
+                    </div>)}
+
+
+                    <div style={{
+                        margin: "5px 15px",
+                        fontSize: "17px"
+                    }}>设备序列号：3426d560-8832-4469-a70b-74d6a35245ce
+                    </div>
+                    <div style={{margin: "5px 15px", fontSize: "17px"}}>硬件版本：v1.2.0</div>
+                    <div style={{margin: "5px 15px", fontSize: "17px"}}>软件版本：v1.2.0</div>
+
+                </div>
+
                 <div className={styles.title}>
                     网络状态信息
                 </div>
@@ -279,12 +331,20 @@ class SystemState extends React.Component {
 
 }
 
+const mapStateToProps = state => {
+    return {
+        user: state.user.user,
+        activate: state.app.activate
+    }
+}
+
 const mapDispatchToProps = dispatch => {
     return {
         userLogout: () => dispatch(userLogout()),
-        setModule: module => dispatch(setCurrModule(module))
+        setModule: module => dispatch(setCurrModule(module)),
+        setActivateState: activate => dispatch(setActivateState(activate))
     }
 }
 
 
-export default connect(getUser, mapDispatchToProps)(SystemState)
+export default connect(mapStateToProps, mapDispatchToProps)(SystemState)

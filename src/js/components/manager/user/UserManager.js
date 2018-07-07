@@ -155,15 +155,13 @@ class UserManager extends React.PureComponent {
 
 
     render() {
-
         const {getFieldDecorator} = this.props.form;
-
         return (
             <div className={styles.main}>
                 <div style={{display: this.props.user && this.props.user.type == 1 ? "block" : "none"}}
                      className={styles.list}>
                     <div className={styles.title}>管理员列表</div>
-                    <Table columns={this.columns}
+                    <Table  columns={this.columns}
                            dataSource={this.state.data}/>
                 </div>
 

@@ -28,7 +28,6 @@ class Login extends React.PureComponent {
         }
 
 
-
     }
 
     componentDidMount() {

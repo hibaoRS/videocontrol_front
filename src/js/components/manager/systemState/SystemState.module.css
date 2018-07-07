@@ -1,14 +1,15 @@
 .title{
     background: #fff;
-    color: #333;
+    color: #000;
     margin-bottom: 10px;
     font-size: 20px;
+    font-weight: 500;
     text-transform: capitalize;
     width: calc(100% - 460px);
 }
 
 .container{
-    margin-top:2rem;
+    margin-top:1.2rem;
 }
 
 .control{

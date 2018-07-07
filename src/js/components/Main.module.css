@@ -13,14 +13,13 @@
     justify-content: center;
 }
 
-
-.content  > div {
+.content > div {
     border: 1px solid #ebedf0;
     border-radius: 1rem;
-    margin:0 0.2rem;
+    margin: 0 0.2rem;
 }
 
-.content  > div > span {
+.content > div > span {
     background: rgba(0, 0, 0, .02);
     display: inline-block;
     line-height: 2.7rem;
@@ -28,7 +27,7 @@
     text-align: center;
 }
 
-.content  > div > div {
+.content > div > div {
     height: calc(100% - 2.7rem);
     margin: 3px 0;
     display: flex;
@@ -111,13 +110,24 @@
 .cameraControlButton {
     cursor: pointer;
     color: #919191;
+    width: 22px;
+    height: 22px;
     font-size: 1.8rem;
-}
-
-.cameraControlButton:hover {
-    color: #5894dc;
 }
 
 .cameraControlButton:active {
     color: #2b6adc;
+}
+
+.cameraControlButton:not(:active) {
+    color: #919191;
+}
+
+.cameraControlButton:disabled {
+    background-color: white;
+    color: #b8b8b8;
+}
+
+.cameraControlButton:hover {
+    background-color: white;
 }
