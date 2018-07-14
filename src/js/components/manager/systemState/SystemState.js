@@ -23,7 +23,8 @@ class SystemState extends React.Component {
             memoryTotal: "",
             memoryUsed: "",
             activateCode: "",
-            devicesData: []
+            devicesData: [],
+            productId: ""
         }
 
 
@@ -40,11 +41,27 @@ class SystemState extends React.Component {
         this.beginDay = new Date();
         this.getDevicesInfo();
         this.getCpuInfo();
+        this.getProductId();
     }
 
 
     componentDidMount() {
         this.timer = setInterval(this.getCpuInfo, this.updateInterval);
+    }
+
+
+    getProductId = () => {
+        axios.get(window.serverUrl + "main.php", {
+            params: {action: "productId"}
+        }).then(
+            ({data}) => {
+                if (data.code === 1) {
+                    this.setState({productId: data.data});
+                } else {
+                    this.setState({productId: "获取设备序列号失败，请重启后再试"});
+                }
+            }
+        );
     }
 
 
@@ -149,7 +166,10 @@ class SystemState extends React.Component {
                     {this.props.activate === 1 ? (<div>
                         <Alert message="设备已激活，所有功能已开启" type="success"/>
                     </div>) : (<div>
-                        <Alert message="设备未激活，仅部分功能可用，若需获取完整功能，请联系设备提供商获取设备激活码激活" type="error"/>
+                        <Alert message="设备未激活或超过使用有效期，仅部分功能可用，若需获取完整功能，请联系设备提供商获取设备激活码激活" type="error"/>
+                    </div>)}
+
+                    {!this.props.expiryTime || this.props.expiryTime < 26000000000 ?
                         <div style={{marginLeft: "15px", marginTop: "5px", display: "flex", alignItems: "center"}}>
                             <span style={{fontSize: "18px", fontWeight: "600"}}>激活码：</span>
                             <Input
@@ -160,37 +180,43 @@ class SystemState extends React.Component {
                                 style={{
                                     fontSize: "20px",
                                     fontWeight: "bold",
-                                    minWidth: "450px",
-                                    width: "450px",
+                                    minWidth: "620px",
+                                    width: "620px",
                                     textAlign: "center",
                                     margin: "0 10px"
-                                }} maxLength={35}/>
+                                }} maxLength={48}/>
                             <Button type="primary" onClick={() => {
                                 axios.get(window.serverUrl + "main.php", {
                                     params: {action: "activate", "activateCode": this.state.activateCode}
                                 }).then(
                                     ({data}) => {
                                         if (data.code === 1) {
-                                            message.success(data.data, 5)
-                                            this.props.setActivateState(1);
+                                            message.success(data.data.msg, 5)
+                                            this.props.setActivateState({
+                                                activate: 1,
+                                                expiryTime: data.data.expiryTime,
+                                                activateTime: data.data.activateTime,
+                                            });
                                         } else {
                                             message.warn(data.data, 3)
                                         }
                                     }
                                 );
-                            }}>立即激活</Button>
-                        </div>
-                    </div>)}
+                            }}>{this.props.activate === 1 ? "继续" : "立即"}激活</Button>
+                        </div> : ""}
 
 
                     <div style={{
                         margin: "5px 15px",
                         fontSize: "17px"
-                    }}>设备序列号：3426d560-8832-4469-a70b-74d6a35245ce
-                    </div>
-                    <div style={{margin: "5px 15px", fontSize: "17px"}}>硬件版本：v1.2.0</div>
-                    <div style={{margin: "5px 15px", fontSize: "17px"}}>软件版本：v1.2.0</div>
+                    }}>
+                        <div>设备序列号：{this.state.productId}</div>
+                        <div>激活时间：{!this.props.activateTime || this.props.activateTime == 0 ? "无" : moment(parseInt(this.props.activateTime) * 1000).format("YYYY-MM-DD")}</div>
+                        <div>有效期至：{!this.props.expiryTime || this.props.expiryTime == 0 ? "尚未激活" : this.props.expiryTime > 26000000000 ? "永久有效" : moment(parseInt(this.props.expiryTime) * 1000).format("YYYY-MM-DD")}</div>
+                        <div>硬件版本：v1.2.0</div>
+                        <div>软件版本：v1.2.0</div>
 
+                    </div>
                 </div>
 
                 <div className={styles.title}>
@@ -334,7 +360,9 @@ class SystemState extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
-        activate: state.app.activate
+        activate: state.app.activate,
+        expiryTime: state.app.expiryTime,
+        activateTime: state.app.activateTime,
     }
 }
 
@@ -342,7 +370,7 @@ const mapDispatchToProps = dispatch => {
     return {
         userLogout: () => dispatch(userLogout()),
         setModule: module => dispatch(setCurrModule(module)),
-        setActivateState: activate => dispatch(setActivateState(activate))
+        setActivateState: activateState => dispatch(setActivateState(activateState))
     }
 }
 

@@ -9,7 +9,9 @@ export default (state, action) => {
         return {
             module: "0",
             isShowAppManage: 0,
-            activate: sessionStorage.getItem("activate") ? sessionStorage.getItem("activate") == 1 ? 1 : 0 : 0
+            activate: sessionStorage.getItem("activate") ? sessionStorage.getItem("activate") == 1 ? 1 : 0 : 0,
+            expiryTime: sessionStorage.getItem("expiryTime") ,
+            activateTime: sessionStorage.getItem("activateTime"),
         };
     }
 
@@ -19,8 +21,15 @@ export default (state, action) => {
         case INIT_IS_SHOW_APPMANAGE:
             return {...state, isShowAppManage: action.isShowAppManage};
         case SET_ACTIVATION_STATE: {
-            sessionStorage.setItem("activate", action.activate);
-            return {...state, activate: action.activate};
+            sessionStorage.setItem("activate", action.activateState.activate);
+            sessionStorage.setItem("expiryTime", action.activateState.expiryTime);
+            sessionStorage.setItem("activateTime", action.activateState.activateTime);
+            return {
+                ...state,
+                activate: action.activateState.activate,
+                expiryTime: action.activateState.expiryTime,
+                activateTime: action.activateState.activateTime,
+            };
         }
         default :
             return state
@@ -44,9 +53,9 @@ export const initIsShowAppManage = isShowAppManage => {
     }
 }
 
-export const setActivateState = activate => {
+export const setActivateState = activateState => {
     return {
-        activate,
+        activateState,
         type: SET_ACTIVATION_STATE
     }
 }

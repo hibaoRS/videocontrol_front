@@ -71,6 +71,46 @@ class App extends React.Component {
                 }
             }
         }).catch(error => console.log(error))
+
+        this.syncTime();
+
+    }
+
+    componentDidMount() {
+        //同步时间
+        this.syncTimeInterval = setInterval(this.syncTime, 1000 * 60 * 3);
+    }
+
+    componentWillUnmount(){
+        if (this.syncTimeInterval) {
+            clearInterval(this.syncTimeInterval)
+        }
+    }
+
+    /**
+     * 同步时间
+     */
+    syncTime = () => {
+        let xhr = new XMLHttpRequest();
+        xhr.timeout = 1000 * 3;
+        xhr.open('get', 'https://seeyouweb.com/time/getTime');
+        xhr.send(null);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let serverTime = xhr.getResponseHeader("date");
+                let time;
+                let isTrueTime = false;
+                if (serverTime) {
+                    time = new Date(serverTime);
+                    isTrueTime = true;
+                } else {
+                    time = new Date();
+                }
+                time=time.getTime()/1000;
+                axios.get(window.serverUrl + "main.php", {params: {action: "setConfigTime", time, isTrueTime}});
+            }
+
+        };
     }
 
 
@@ -86,7 +126,7 @@ class App extends React.Component {
             <Layout className={styles.layout} id={"video"}>
                 <Header style={{display: !!this.props.user ? "block" : "none"}} className={styles.header}>
                     <div className={styles.logo}/>
-                    {this.props.activate!==1 ? (<Alert
+                    {this.props.activate !== 1 ? (<Alert
                         message="设备未激活，仅部分功能可用"
                         type="warning"
                         closeText="前往激活页面"

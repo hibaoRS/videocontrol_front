@@ -44,9 +44,6 @@ class Setting extends React.Component {
             showControlAppManage: 0,
         }
 
-        console.log(props.activate!==1)
-        console.log(props.activate)
-
 
         if (!props.user) {
             props.history.push("/login");
@@ -375,7 +372,7 @@ class Setting extends React.Component {
 
 
                     <div className={styles.setting} id={"camera"}>
-                        <div className={styles.title}>摄像头控制设置<a href={"#camera"}
+                        <div className={styles.title}>摄像头地址设置<a href={"#camera"}
                                                                 className={styles.anchor}>#</a></div>
                         <div className={styles.content}>
                             <div>
@@ -444,6 +441,44 @@ class Setting extends React.Component {
                                             onChange={val => {
                                                 let configs = this.state.configs
                                                 configs.camera.teacher_panorama = val
+                                                this.setState({configs})
+                                            }}>
+                                        {this.state.configOptions ? Object.entries(this.state.configOptions.camera.value).map((entry, index) => (
+                                            <Option key={entry[1]}>{entry[0]}</Option>
+                                        )) : ""}
+                                    </Select>
+                                </div>
+                            </div>
+
+
+                            <div>
+                                <span>板书特写</span>
+                                <div>
+                                    <Select disabled={this.state.disabled}
+                                            value={this.state.configs ? this.state.configs.camera.board_closeUp + "" : ""}
+                                            style={{width: this.selectWidth}}
+                                            onChange={val => {
+                                                let configs = this.state.configs
+                                                configs.camera.board_closeUp = val
+                                                this.setState({configs})
+                                            }}>
+                                        {this.state.configOptions ? Object.entries(this.state.configOptions.camera.value).map((entry, index) => (
+                                            <Option key={entry[1]}>{entry[0]}</Option>
+                                        )) : ""}
+                                    </Select>
+                                </div>
+                            </div>
+
+
+                            <div>
+                                <span>自定义</span>
+                                <div>
+                                    <Select disabled={this.state.disabled}
+                                            value={this.state.configs ? this.state.configs.camera.custom + "" : ""}
+                                            style={{width: this.selectWidth}}
+                                            onChange={val => {
+                                                let configs = this.state.configs
+                                                configs.camera.custom = val
                                                 this.setState({configs})
                                             }}>
                                         {this.state.configOptions ? Object.entries(this.state.configOptions.camera.value).map((entry, index) => (
@@ -840,7 +875,7 @@ class Setting extends React.Component {
                         <Link href="#video" title="视频录制设置"/>
                         <Link href="#audio" title="音频设置"/>
                         <Link href="#serial" title="串口设置"/>
-                        <Link href="#camera" title="摄像头控制设置"/>
+                        <Link href="#camera" title="摄像头地址设置"/>
                         <Link href="#rtmp" title=" RTMP&nbsp;直播设置"/>
                         <Link href="#main_screen" title="本地监视器设置"/>
                         <Link href="#misc" title="其他设置"/>
@@ -866,15 +901,13 @@ class Setting extends React.Component {
         //判断摄像头设置是否相同
         if (!this.isAllDiff(this.object2Array(this.state.configs.camera))) {
             window.location.href = "/setting#camera";
-            message.warn("摄像头控制中的所有取值必须不相同");
+            message.warn("摄像头控制中的所有地址取值必须不相同");
             return;
         }
 
 
         const hide = message.loading('保存配置中...', 0);
         this.setState({disabled: true});
-
-        console.log(this.state.configs)
 
         axios.get(window.serverUrl + "main.php", {
             params: {

@@ -19,7 +19,8 @@ const Option = Select.Option;
 
 class Main extends React.Component {
 
-    names = ["学生特写", "教师特写", "学生全景", "教师全景", "板书特写", "课件画面", "主播"]
+    names = ["学生特写", "教师特写", "学生全景", "教师全景", "板书特写", "课件画面", "主播"];
+    keys = ["student_closeUp", "teacher_closeUp", "student_panorama", "teacher_panorama", "board_closeUp", "custom",];
 
     standbyPlayers = [];
     hideStandbyTimeouts = [];
@@ -33,7 +34,7 @@ class Main extends React.Component {
 
     constructor(props) {
         super()
-        
+
         window.$ = $
         this.state = {
             cameraPresetMode: false,
@@ -123,7 +124,7 @@ class Main extends React.Component {
             this.initConfig()
 
         //设置定时刷新
-        this.refreshInterval = setInterval(this.refresh, 1000 * 60 * 60)
+        this.refreshInterval = setInterval(this.refresh, 1000 * 60 * 60);
         //获取信号信息
         this.getSignalsInterval = setInterval(this.getSignals, 7000);
         //获取激活状态
@@ -160,12 +161,21 @@ class Main extends React.Component {
 
     }
 
+
     getActivateState = () => {
         axios.get(window.serverUrl + "main.php?action=getActivateState").then(({data}) => {
-            if (data.code === 1 && data.data === 1) {
-                this.props.setActivateState(1);
+            if (data.code === 1) {
+                this.props.setActivateState({
+                    activate: data.data.activate ,
+                    expiryTime: data.data.expiryTime,
+                    activateTime: data.data.activateTime,
+                });
             } else {
-                this.props.setActivateState(0);
+                this.props.setActivateState({
+                    activate: 0,
+                    expiryTime: 0,
+                    activateTime: 0,
+                });
             }
         })
     }
@@ -518,7 +528,7 @@ class Main extends React.Component {
                         <div>
                             <div>
                                 <div>
-                                    <Button disabled={this.props.activate!==1 || this.state.onHandleRecord}
+                                    <Button disabled={this.props.activate !== 1 || this.state.onHandleRecord}
                                             onClick={this.handleRecord}>
                                         <i className={this.state.recording ? "iconfont icon-stop" : "iconfont icon-circle"}
                                            style={{color: this.state.recording ? "#00FF00" : "red"}}/>
@@ -527,7 +537,7 @@ class Main extends React.Component {
                                 </div>
                                 <div>
                                     <Button
-                                        disabled={this.props.activate!==1 || !this.state.recording || this.state.onHandlePause}
+                                        disabled={this.props.activate !== 1 || !this.state.recording || this.state.onHandlePause}
                                         onClick={this.handlePauseRecord}
                                         icon={this.state.recording ? this.state.pause ? "caret-right" : "pause" : "pause"}>
                                         {this.state.recording ? this.state.pause ? "继续录制" : "暂停录制" : "暂停录制"}
@@ -536,7 +546,7 @@ class Main extends React.Component {
                             </div>
                             <div style={{margin: ".4rem", display: "flex", alignItems: "center"}}>
                                 <Switch
-                                    disabled={this.props.activate!==1 || this.state.onHandleSwitch}
+                                    disabled={this.props.activate !== 1 || this.state.onHandleSwitch}
                                     onClick={this.handleSwitch} checked={this.state.autoSwitch == 1}
                                     checkedChildren="自动模式" unCheckedChildren="手动模式" defaultChecked/>
                                 <div style={{
@@ -566,7 +576,7 @@ class Main extends React.Component {
                                 <Button
                                     shape="circle"
                                     style={{border: "none"}}
-                                    disabled={this.props.activate!==1}
+                                    disabled={this.props.activate !== 1}
                                     onMouseDown={this.startCameraMove.bind(this, "2")}
                                     onMouseUp={this.stopCameraMove}
                                     className={styles.cameraControlButton}
@@ -575,7 +585,7 @@ class Main extends React.Component {
                                     <Button
                                         shape="circle"
                                         style={{border: "none"}}
-                                        disabled={this.props.activate!==1}
+                                        disabled={this.props.activate !== 1}
                                         className={styles.cameraControlButton}
                                         onMouseDown={this.startCameraMove.bind(this, "4")}
                                         onMouseUp={this.stopCameraMove}
@@ -583,13 +593,13 @@ class Main extends React.Component {
                                     <Button
                                         shape="circle"
                                         style={{border: "none"}}
-                                        disabled={this.props.activate!==1}
+                                        disabled={this.props.activate !== 1}
                                         className={styles.cameraControlButton}
                                         onClick={() => {
                                             axios.get(window.serverUrl + "main.php", {
                                                 params: {
                                                     action: "cameraControl",
-                                                    addr: this.state.camera_control.currCamera,
+                                                    addr: this.state.configs.camera[this.keys[parseInt(this.state.camera_control.currCamera) - 1 + ""]],
                                                     cmd: "0",
                                                     value: "0",
                                                 }
@@ -619,7 +629,7 @@ class Main extends React.Component {
                                     <Button
                                         shape="circle"
                                         style={{border: "none"}}
-                                        disabled={this.props.activate!==1}
+                                        disabled={this.props.activate !== 1}
                                         className={styles.cameraControlButton}
                                         onMouseDown={this.startCameraMove.bind(this, "5")}
                                         onMouseUp={this.stopCameraMove}
@@ -628,7 +638,7 @@ class Main extends React.Component {
                                 <Button
                                     shape="circle"
                                     style={{border: "none"}}
-                                    disabled={this.props.activate!==1}
+                                    disabled={this.props.activate !== 1}
                                     className={styles.cameraControlButton}
                                     onMouseDown={this.startCameraMove.bind(this, "3")}
                                     onMouseUp={this.stopCameraMove}
@@ -644,11 +654,12 @@ class Main extends React.Component {
                                 <div>
                                     <span>&nbsp;摄&nbsp;像&nbsp;头&nbsp; </span>
                                     <Select
-                                        disabled={this.props.activate!==1}
+                                        disabled={this.props.activate !== 1}
                                         size={"small"}
                                         value={this.state.configs ? this.state.camera_control.currCamera : ""}
                                         style={{marginLeft: "2px", width: "93px"}}
-                                        onChange={val => {
+                                        onChange={(val) => {
+
                                             axios.get(window.serverUrl + "main.php", {
                                                 params: {
                                                     action: "setConfigValue",
@@ -669,14 +680,13 @@ class Main extends React.Component {
                                                 }
                                             }).catch(e => console.log(e))
                                         }}>
-                                        <Option
-                                            key={this.state.configs ? this.state.configs.camera.student_closeUp : "1"}>学生特写</Option>
-                                        <Option
-                                            key={this.state.configs ? this.state.configs.camera.teacher_closeUp : "2"}>教师特写</Option>
-                                        <Option
-                                            key={this.state.configs ? this.state.configs.camera.student_panorama : "3"}>学生全景</Option>
-                                        <Option
-                                            key={this.state.configs ? this.state.configs.camera.teacher_panorama : "4"}>教师全景</Option>
+
+                                        <Option key={"1"}>学生特写</Option>
+                                        <Option key={"2"}>教师特写</Option>
+                                        <Option key={"3"}>学生全景</Option>
+                                        <Option key={"4"}>教师全景</Option>
+                                        <Option key={"5"}>板书特写</Option>
+                                        <Option key={"6"}>自定义</Option>
                                     </Select>
                                 </div>
                                 <div style={{
@@ -686,7 +696,7 @@ class Main extends React.Component {
                                 }}>
                                     <span>焦距大小</span>
                                     <Slider
-                                        disabled={this.props.activate!==1}
+                                        disabled={this.props.activate !== 1}
                                         max={1023}
                                         value={this.state.camera_control
                                             ? this.state.camera_control[this.state.camera_control.currCamera].focal_length
@@ -700,7 +710,7 @@ class Main extends React.Component {
                                             axios.get(window.serverUrl + "main.php", {
                                                 params: {
                                                     action: "cameraControl",
-                                                    addr: this.state.camera_control.currCamera,
+                                                    addr: this.state.configs.camera[this.keys[parseInt(this.state.camera_control.currCamera) - 1 + ""]],
                                                     cmd: "6",
                                                     value: val + "",
                                                 }
@@ -726,7 +736,7 @@ class Main extends React.Component {
                                 }}>
                                     <span>变焦速度</span>
                                     <Slider
-                                        disabled={this.props.activate!==1}
+                                        disabled={this.props.activate !== 1}
                                         min={2} max={7}
                                         value={this.state.camera_control
                                             ? this.state.camera_control[this.state.camera_control.currCamera].zoom_speed
@@ -740,7 +750,7 @@ class Main extends React.Component {
                                             axios.get(window.serverUrl + "main.php", {
                                                 params: {
                                                     action: "cameraControl",
-                                                    addr: this.state.camera_control.currCamera,
+                                                    addr: this.state.configs.camera[this.keys[parseInt(this.state.camera_control.currCamera) - 1 + ""]],
                                                     cmd: "7",
                                                     value: val + "",
                                                 }
@@ -767,7 +777,7 @@ class Main extends React.Component {
                             <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
                                 <div>
                                     <Button
-                                        disabled={this.props.activate!==1}
+                                        disabled={this.props.activate !== 1}
                                         style={{
                                             color: this.state.cameraPresetMode ? "red" : "",
                                             borderColor: this.state.cameraPresetMode ? "red" : ""
@@ -777,7 +787,7 @@ class Main extends React.Component {
                                 </div>
                                 <div>
                                     <Button
-                                        disabled={this.props.activate!==1}
+                                        disabled={this.props.activate !== 1}
                                         onClick={this.setCameraPreset.bind(this, "0")}
                                         style={{
                                             color: this.state.cameraPresetMode ? "red" : "",
@@ -788,7 +798,7 @@ class Main extends React.Component {
                                         1
                                     </Button>
                                     <Button
-                                        disabled={this.props.activate!==1}
+                                        disabled={this.props.activate !== 1}
                                         onClick={this.setCameraPreset.bind(this, "1")}
                                         style={{
                                             color: this.state.cameraPresetMode ? "red" : "",
@@ -799,7 +809,7 @@ class Main extends React.Component {
                                         2
                                     </Button>
                                     <Button
-                                        disabled={this.props.activate!==1}
+                                        disabled={this.props.activate !== 1}
                                         onClick={this.setCameraPreset.bind(this, "2")}
                                         style={{
                                             color: this.state.cameraPresetMode ? "red" : "",
@@ -812,7 +822,7 @@ class Main extends React.Component {
                                 </div>
                                 <div>
                                     <Button
-                                        disabled={this.props.activate!==1}
+                                        disabled={this.props.activate !== 1}
                                         onClick={this.setCameraPreset.bind(this, "3")}
                                         style={{
                                             color: this.state.cameraPresetMode ? "red" : "",
@@ -823,7 +833,7 @@ class Main extends React.Component {
                                         4
                                     </Button>
                                     <Button
-                                        disabled={this.props.activate!==1}
+                                        disabled={this.props.activate !== 1}
                                         onClick={this.setCameraPreset.bind(this, "4")}
                                         style={{
                                             color: this.state.cameraPresetMode ? "red" : "",
@@ -834,7 +844,7 @@ class Main extends React.Component {
                                         5
                                     </Button>
                                     <Button
-                                        disabled={this.props.activate!==1}
+                                        disabled={this.props.activate !== 1}
                                         onClick={this.setCameraPreset.bind(this, "5")}
                                         style={{
                                             color: this.state.cameraPresetMode ? "red" : "",
@@ -855,7 +865,7 @@ class Main extends React.Component {
                         <div style={{maxWidth: "200px"}}>
                             <div>
                                 <span>课程名</span>
-                                <Input disabled={this.props.activate!==1||this.state.recording == 1}
+                                <Input disabled={this.props.activate !== 1 || this.state.recording == 1}
                                        style={{minWidth: "90px", maxWidth: "150px"}}
                                        onBlur={() => {
                                            let recordName = this.state.recordName.trim();
@@ -890,7 +900,7 @@ class Main extends React.Component {
                             <div>
                                 <span>课程分段时长</span>
 
-                                <InputNumber disabled={this.props.activate!==1||this.state.recording == 1}
+                                <InputNumber disabled={this.props.activate !== 1 || this.state.recording == 1}
                                              style={{width: "60px"}}
                                              defaultValue={45}
                                              min={30}
@@ -1190,7 +1200,7 @@ class Main extends React.Component {
         axios.get(window.serverUrl + "main.php", {
             params: {
                 action: "cameraControl",
-                addr: this.state.camera_control.currCamera,
+                addr: this.state.configs.camera[this.keys[parseInt(this.state.camera_control.currCamera) - 1 + ""]],
                 cmd: cmd,
                 value: cameraSpeed + "",
             }
@@ -1222,7 +1232,7 @@ class Main extends React.Component {
         axios.get(window.serverUrl + "main.php", {
             params: {
                 action: "cameraControl",
-                addr: this.state.camera_control.currCamera,
+                addr: this.state.configs.camera[this.keys[parseInt(this.state.camera_control.currCamera) - 1 + ""]],
                 cmd: "1",
                 value: "0",
             }
@@ -1240,7 +1250,7 @@ class Main extends React.Component {
             axios.get(window.serverUrl + "main.php", {
                 params: {
                     action: "cameraControl",
-                    addr: this.state.camera_control.currCamera,
+                    addr: this.state.configs.camera[this.keys[parseInt(this.state.camera_control.currCamera) - 1 + ""]],
                     cmd: "8",
                     value: value,
                 }
@@ -1255,7 +1265,7 @@ class Main extends React.Component {
             axios.get(window.serverUrl + "main.php", {
                 params: {
                     action: "cameraControl",
-                    addr: this.state.camera_control.currCamera,
+                    addr: this.state.configs.camera[this.keys[parseInt(this.state.camera_control.currCamera) - 1 + ""]],
                     cmd: "9",
                     value: value,
                 }
@@ -1285,11 +1295,9 @@ const mapDispatchToProps = dispatch => {
         // play: isPlay => dispatch(play(isPlay)),
         setModule: module => dispatch(setCurrModule(module)),
         userLogout: () => dispatch(userLogout()),
-        setActivateState: activate => dispatch(setActivateState(activate))
+        setActivateState: activateState => dispatch(setActivateState(activateState))
     }
 }
-
-
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main)
