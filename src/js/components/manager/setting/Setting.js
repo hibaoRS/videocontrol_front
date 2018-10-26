@@ -2,7 +2,20 @@ import React from "react"
 import {connect} from "react-redux";
 import styles from "./Setting.module.css"
 import axios from "axios"
-import {Select, message, Switch, AutoComplete, Button, Icon, Popover, Popconfirm, Anchor, Upload, Input} from 'antd';
+import {
+    Select,
+    message,
+    Switch,
+    AutoComplete,
+    Button,
+    Icon,
+    Popover,
+    Popconfirm,
+    Anchor,
+    Upload,
+    Input,
+    Modal
+} from 'antd';
 import {initIsShowAppManage, setCurrModule} from "../../../reducers/AppReducer";
 import {userLogout} from "../../../reducers/UserReducer";
 
@@ -38,10 +51,11 @@ class Setting extends React.Component {
         super()
 
         this.state = {
-            disabled: props.activate!==1,
+            disabled: props.activate !== 1,
             configs: null,
             configOptions: null,
             showControlAppManage: 0,
+            previewVisible: false,
         }
 
 
@@ -86,10 +100,11 @@ class Setting extends React.Component {
     fetchConfig = () => {
         axios.get(window.serverUrl + "main.php", {params: {action: "getConfig"}}).then(res => {
             if (res.data.code === 1) {
+                let configs = res.data.data.configs;
                 this.setState({
                     showControlAppManage: res.data.data.showControlAppManage,
-                    configs: res.data.data.configs,
-                    mainPanel: res.data.data.mainPanel
+                    configs,
+                    mainPanel: res.data.data.mainPanel,
                 })
             }
             else if (res.data.code === 0) {
@@ -104,12 +119,8 @@ class Setting extends React.Component {
 
     render() {
         return (
-
             <div className={styles.container}>
-
-
                 <div className={styles.settings}>
-
                     <div className={styles.setting}>
                         <div className={styles.title}>视频录制设置<a href={"#video"}
                                                                className={styles.anchor}>#</a></div>
@@ -497,7 +508,6 @@ class Setting extends React.Component {
                         <div className={styles.title}>RTMP直播设置<a href={"#rtmp"}
                                                                  className={styles.anchor}>#</a></div>
                         <div className={styles.content}>
-
                             <div>
                                 <span>
                                     RTMP直播服务器
@@ -524,7 +534,6 @@ class Setting extends React.Component {
                                                           }
                                                       })
                                                   }}
-                                                  onLive
                                                   dataSource={this.state.dataSource ? this.state.dataSource.server_url : []}
                                                   onBlur={() => {
                                                       if (this.state.configs.rtmp.server_url.trim() == "") {
@@ -575,6 +584,327 @@ class Setting extends React.Component {
                                     </Select>
                                 </div>
                             </div>
+
+                        </div>
+                    </div>
+
+
+                    <div className={styles.setting} id={"ftp"}>
+                        <div className={styles.title}>FTP上传设置<a href={"#ftp"}
+                                                                className={styles.anchor}>#</a></div>
+                        <div className={styles.content}>
+                            <div>
+                                <span>
+                                    FTP服务器
+                                </span>
+                                <div>
+                                    <AutoComplete disabled={this.state.disabled} style={{width: this.selectWidth}}
+                                                  value={this.state.configs ? this.state.configs.other.ftp.server : ""}
+                                                  onChange={val => {
+                                                      let configs = this.state.configs
+                                                      configs.other.ftp.server = val
+                                                      this.setState({
+                                                          configs: configs,
+                                                          dataSource: {
+                                                              ftp_server:
+                                                                  !val || val.indexOf('@') >= 0 ? [] : [
+                                                                      `ftp://${val}`,
+                                                                  ],
+                                                          }
+                                                      })
+                                                  }}
+                                                  dataSource={this.state.dataSource ? this.state.dataSource.ftp_server : []}
+                                                  onBlur={() => {
+                                                      if (this.state.configs.other.ftp.server.trim() == "") {
+                                                          let configs = this.state.configs
+                                                          configs.other.ftp.server = "ftp://58.67.222.35"
+                                                          this.setState({configs})
+
+                                                      }
+                                                  }}
+                                                  placeholder="默认值ftp://58.67.222.35"/>
+                                </div>
+                            </div>
+
+
+                            <div>
+                                <span>
+                                    端口
+                                </span>
+                                <div>
+                                    <Input disabled={this.state.disabled} style={{width: this.selectWidth}}
+                                           value={this.state.configs ? this.state.configs.other.ftp.port : ""}
+                                           onChange={e => {
+                                               let val = e.target.value
+                                               let configs = this.state.configs
+                                               configs.other.ftp.port = val
+                                               this.setState({
+                                                   configs: configs
+                                               })
+                                           }}
+                                           onBlur={() => {
+                                               if (this.state.configs.other.ftp.port.trim() == "") {
+                                                   let configs = this.state.configs
+                                                   configs.other.ftp.port = "21"
+                                                   this.setState({configs})
+                                               }
+                                           }}
+                                           placeholder="默认值21"/>
+                                </div>
+                            </div>
+
+
+                            <div>
+                                <span>
+                                    用户名
+                                </span>
+                                <div>
+                                    <Input disabled={this.state.disabled} style={{width: this.selectWidth}}
+                                           value={this.state.configs ? this.state.configs.other.ftp.user : ""}
+                                           onChange={e => {
+                                               let val = e.target.value
+                                               let configs = this.state.configs
+                                               configs.other.ftp.user = val
+                                               this.setState({
+                                                   configs: configs
+                                               })
+                                           }}
+                                           onBlur={() => {
+                                               if (this.state.configs.other.ftp.user.trim() == "") {
+                                                   let configs = this.state.configs
+                                                   configs.other.ftp.user = "vision_ftp"
+                                                   this.setState({configs})
+                                               }
+                                           }}
+                                           placeholder="默认值vision_ftp"/>
+                                </div>
+                            </div>
+
+
+                            <div>
+                                <span>
+                                    密码
+                                </span>
+                                <div>
+                                    <Input disabled={this.state.disabled} style={{width: this.selectWidth}}
+                                           value={this.state.configs ? this.state.configs.other.ftp.password : ""}
+                                           onChange={e => {
+                                               let val = e.target.value
+                                               let configs = this.state.configs
+                                               configs.other.ftp.password = val
+                                               this.setState({
+                                                   configs: configs
+                                               })
+                                           }}
+                                           onBlur={() => {
+                                               if (this.state.configs.other.ftp.password.trim() == "") {
+                                                   let configs = this.state.configs
+                                                   configs.other.ftp.password = "vision_upload"
+                                                   this.setState({configs})
+                                               }
+                                           }}
+                                           placeholder="默认值vision_upload"/>
+                                </div>
+                            </div>
+
+
+                            <div>
+                                <span>
+                                    点播端口
+                                </span>
+                                <div>
+                                    <Input disabled={this.state.disabled} style={{width: this.selectWidth}}
+                                           value={this.state.configs ? this.state.configs.other.ftp.on_demand_port : ""}
+                                           onChange={e => {
+                                               let val = e.target.value
+                                               let configs = this.state.configs
+                                               configs.other.ftp.on_demand_port = val
+                                               this.setState({
+                                                   configs: configs
+                                               })
+                                           }}
+                                           onBlur={() => {
+                                               if (this.state.configs.other.ftp.on_demand_port.trim() == "") {
+                                                   let configs = this.state.configs
+                                                   configs.other.ftp.on_demand_port = "8085"
+                                                   this.setState({configs})
+                                               }
+                                           }}
+                                           placeholder="默认值8085"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div className={styles.setting} id={"interact_live"}>
+                        <div className={styles.title}>互动直播设置<a href={"#interact_live"}
+                                                               className={styles.anchor}>#</a></div>
+                        <div className={styles.content}>
+
+                            <div>
+                                <span>
+                                    录播主机序列号
+                                </span>
+                                <div>
+                                    <Input disabled={this.state.disabled} style={{width: this.selectWidth}}
+                                           value={this.state.configs ? this.state.configs.other.interact_live.serial_number : ""}
+                                           onChange={e => {
+                                               let val = e.target.value
+                                               let configs = this.state.configs
+                                               configs.other.interact_live.serial_number = val
+                                               this.setState({
+                                                   configs: configs
+                                               })
+                                           }}
+                                           placeholder="请输入录播主机序列号"
+                                    />
+                                </div>
+                            </div>
+
+
+                            <div>
+                                <span>
+                                    录播主机名称
+                                </span>
+                                <div>
+                                    <Input disabled={this.state.disabled} style={{width: this.selectWidth}}
+                                           value={this.state.configs ? this.state.configs.other.interact_live.class_room_name : ""}
+                                           onChange={e => {
+                                               let val = e.target.value
+                                               let configs = this.state.configs
+                                               configs.other.interact_live.class_room_name = val
+                                               this.setState({
+                                                   configs: configs
+                                               })
+                                           }}
+                                           placeholder="请输入录播主机名称"
+                                    />
+                                </div>
+                            </div>
+
+
+                            <div>
+                                <span>
+                                    录播主机公网IP
+                                </span>
+                                <div>
+                                    <Input disabled={this.state.disabled} style={{width: this.selectWidth}}
+                                           value={this.state.configs ? this.state.configs.other.interact_live.ip_address : ""}
+                                           onChange={e => {
+                                               let val = e.target.value
+                                               let configs = this.state.configs
+                                               configs.other.interact_live.ip_address = val
+                                               this.setState({
+                                                   configs: configs
+                                               })
+                                           }}
+                                           placeholder="请输入录播主机公网IP"
+                                    />
+                                </div>
+                            </div>
+
+
+                            <div>
+                                <span>
+                                    资源平台IP
+                                </span>
+                                <div>
+                                    <Input disabled={this.state.disabled} style={{width: this.selectWidth}}
+                                           value={this.state.configs ? this.state.configs.other.interact_live.resource_platform_ip : ""}
+                                           onChange={e => {
+                                               let val = e.target.value
+                                               let configs = this.state.configs
+                                               configs.other.interact_live.resource_platform_ip = val
+                                               this.setState({
+                                                   configs: configs
+                                               })
+                                           }}
+                                           onBlur={() => {
+                                               if (this.state.configs.other.interact_live.resource_platform_ip.trim() == "") {
+                                                   let configs = this.state.configs
+                                                   configs.other.interact_live.resource_platform_ip = "58.67.222.35"
+                                                   this.setState({configs})
+                                               }
+                                           }}
+                                           placeholder="默认值58.67.222.35"/>
+                                </div>
+                            </div>
+
+
+                            <div>
+                                <span>
+                                    资源平台端口
+                                </span>
+                                <div>
+                                    <Input disabled={this.state.disabled} style={{width: this.selectWidth}}
+                                           value={this.state.configs ? this.state.configs.other.interact_live.resource_platform_port : ""}
+                                           onChange={e => {
+                                               let val = e.target.value
+                                               let configs = this.state.configs
+                                               configs.other.interact_live.resource_platform_port = val
+                                               this.setState({
+                                                   configs: configs
+                                               })
+                                           }}
+                                           onBlur={() => {
+                                               if (this.state.configs.other.interact_live.resource_platform_port.trim() == "") {
+                                                   let configs = this.state.configs
+                                                   configs.other.interact_live.resource_platform_port = "9000"
+                                                   this.setState({configs})
+                                               }
+                                           }}
+                                           placeholder="默认值9000"/>
+                                </div>
+                            </div>
+
+
+                            <div>
+                                <span>
+                                    视频封面（实时生效）
+                                </span>
+                                <div>
+                                    <Upload
+                                        showUploadList={false}
+                                        accept={"image/*"}
+                                        withCredentials={true}
+                                        action={window.serverUrl + "main.php?action=setVideoCover"}
+                                        onChange={info => {
+                                            console.log(info)
+                                            if (info.file.status === 'done') {
+                                                let res = info.file.response;
+                                                if (res.code === 1) {
+                                                    let configs = this.state.configs
+                                                    configs.other.interact_live.picAddress = res.data
+                                                    this.setState({
+                                                        configs
+                                                    });
+                                                    message.success("设置成功");
+                                                } else {
+                                                    message.error(res.data);
+                                                }
+                                            } else if (info.file.status === 'error') {
+                                                message.error(`${info.file.name} 文件上传失败，请稍后再试或重启系统.`);
+                                            }
+                                            return true;
+                                        }}
+                                    >
+                                        <Button>
+                                            <Icon type="upload"/>选择图片
+                                        </Button>
+                                    </Upload>
+                                    <img onClick={() => this.setState({previewVisible: true})}
+                                         src={this.state.configs ? window.serverUrl + this.state.configs.other.interact_live.picAddress + "?" + Math.random() : ""}
+                                         style={{width: "150px", height: "120px"}}/>
+                                    <Modal visible={this.state.previewVisible} footer={null}
+                                           onCancel={() => this.setState({previewVisible: false})}>
+                                        <img alt="图片预览" style={{width: '100%'}}
+                                             src={this.state.configs ? window.serverUrl + this.state.configs.other.interact_live.picAddress + "?" + Math.random() : ""}/>
+                                    </Modal>
+                                </div>
+                            </div>
+
 
                         </div>
                     </div>
@@ -877,6 +1207,8 @@ class Setting extends React.Component {
                         <Link href="#serial" title="串口设置"/>
                         <Link href="#camera" title="摄像头地址设置"/>
                         <Link href="#rtmp" title=" RTMP&nbsp;直播设置"/>
+                        <Link href="#ftp" title="FTP上传设置"/>
+                        <Link href="#interact_live" title="互动直播设置"/>
                         <Link href="#main_screen" title="本地监视器设置"/>
                         <Link href="#misc" title="其他设置"/>
                         {this.state.showControlAppManage === 1 ? (
