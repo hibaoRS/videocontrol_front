@@ -90,6 +90,7 @@ class VideoManager extends React.Component {
                                                    }
                                                }).then(res => {
                                                    if (res.data.code) {
+                                                       this.getFiles();
                                                        let status = this.state.ftpStatus.status;
                                                        status[0] = "0";
                                                        this.setState({

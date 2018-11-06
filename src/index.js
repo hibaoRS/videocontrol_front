@@ -17,7 +17,6 @@ axios.defaults.withCredentials = true
 
 window.serverUrl = "/videocontrol/";
 window.videoUrl = window.location.host + "/disk/videos/";
-
 // window.serverUrl = "http://127.0.0.1:8082/htdocs/videocontrol/";
 // window.videoUrl = "127.0.0.1:8082/htdocs/videos/";
 

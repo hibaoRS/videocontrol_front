@@ -4,7 +4,7 @@ import {Chart, Tooltip, Axis, Area, Line, StackBar, Coord, Legend} from 'viser-r
 import moment from "moment"
 import {connect} from "react-redux";
 import styles from "./SystemState.module.css"
-import {Affix, Alert, Button, Input, Popconfirm} from "antd";
+import {Affix, Alert, Button, Icon, Input, Popconfirm, Upload} from "antd";
 import {message} from "antd/lib/index";
 import {userLogout} from "../../../reducers/UserReducer";
 import {setActivateState, setCurrModule} from "../../../reducers/AppReducer";
@@ -42,6 +42,7 @@ class SystemState extends React.Component {
         this.getDevicesInfo();
         this.getCpuInfo();
         this.getProductId();
+        this.getSoftwareVersion();
     }
 
 
@@ -64,6 +65,18 @@ class SystemState extends React.Component {
         );
     }
 
+
+    getSoftwareVersion = () => {
+        axios.get(window.serverUrl + "main.php", {
+            params: {action: "softwareVersion"}
+        }).then(
+            ({data}) => {
+                if (data.code === 1) {
+                    this.setState({softwareVersion: "v" + data.data});
+                }
+            }
+        );
+    }
 
     getCpuInfo = () => {
         axios.get(window.serverUrl + "system.php", {params: {action: "getInfo", command: "cpu"}}).then(res => {
@@ -108,9 +121,7 @@ class SystemState extends React.Component {
 
 
     convertToG = (sizeWidthU) => {
-
         let size = parseFloat(sizeWidthU.substr(0, sizeWidthU.length - 1));
-
 
         if (sizeWidthU.endsWith("M")) {
             size = size / 1024;
@@ -213,11 +224,43 @@ class SystemState extends React.Component {
                         <div>设备序列号：{this.state.productId}</div>
                         <div>激活时间：{!this.props.activateTime || this.props.activateTime == 0 ? "无" : moment(parseInt(this.props.activateTime) * 1000).format("YYYY-MM-DD")}</div>
                         <div>有效期至：{!this.props.expiryTime || this.props.expiryTime == 0 ? "尚未激活" : this.props.expiryTime > 26000000000 ? "永久有效" : moment(parseInt(this.props.expiryTime) * 1000).format("YYYY-MM-DD")}</div>
-                        <div>硬件版本：v1.2.0</div>
-                        <div>软件版本：v1.2.0</div>
+                        <div>硬件版本：v1.20</div>
+                        <div>软件版本：{this.state.softwareVersion}</div>
 
                     </div>
                 </div>
+
+
+                <div className={styles.title}>
+                    系统升级
+                </div>
+                <Upload
+                    showUploadList={false}
+                    accept={"application/zip"}
+                    withCredentials={true}
+                    action={window.serverUrl + "update/update.php?action=run"}
+                    onChange={info => {
+                        if (info.file.status === 'done') {
+                            let res = info.file.response;
+                            if (res.code === 1) {
+                                message.loading('系统正在升级', 8)
+                                    .then(() => message.loading("操作成功，系统正在重启", 10))
+                                    .then(() => message.warn("请重新登录", 2))
+                                    .then(() => this.logout(true))
+
+                            } else {
+                                message.error(res.data);
+                            }
+                        } else if (info.file.status === 'error') {
+                            message.error(`${info.file.name} 文件上传失败，请稍后再试或重启系统.`);
+                        }
+                        return true;
+                    }}
+                >
+                    <Button>
+                        <Icon type="upload"/>选择升级包
+                    </Button>
+                </Upload>
 
                 <div className={styles.title}>
                     网络状态信息
@@ -339,8 +382,9 @@ class SystemState extends React.Component {
         );
     }
 
-    logout = () => {
-        message.success("注销登录成功")
+    logout = (noMessage) => {
+        if (!noMessage)
+            message.success("注销登录成功")
         this.props.userLogout()
     }
 

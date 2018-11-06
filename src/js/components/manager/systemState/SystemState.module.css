@@ -2,10 +2,12 @@
     background: #fff;
     color: #000;
     margin-bottom: 10px;
-    font-size: 20px;
+    font-size: 21px;
     font-weight: 500;
     text-transform: capitalize;
     width: calc(100% - 460px);
+    text-shadow: 2px 2px 3px #ccc;
+
 }
 
 .container{
