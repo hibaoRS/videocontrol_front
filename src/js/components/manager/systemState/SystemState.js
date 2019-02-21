@@ -235,7 +235,7 @@ class SystemState extends React.Component {
                     系统升级
                 </div>
                 <Upload
-                    showUploadList={false}
+                    // showUploadList={true}
                     accept={"application/zip"}
                     withCredentials={true}
                     action={window.serverUrl + "update/update.php?action=run"}
