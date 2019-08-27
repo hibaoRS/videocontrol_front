@@ -44,6 +44,7 @@ class Main extends React.Component {
       layoutName: "",
       recording: 0,
       living: 0,
+      remoteLiving: 0,
       liveTimeCount: 0,
       recordTimeCount: 0,
       autoSwitch: 1,
@@ -60,6 +61,7 @@ class Main extends React.Component {
       onHandleSwitch: false,
       onHandlePause: false,
       onHandleLive: false,
+      onHandleRemoteLive: false,
     }
 
     if (!props.user) {
@@ -92,6 +94,7 @@ class Main extends React.Component {
 
         this.setState({
           living: data.living,
+          remoteLiving: data.remoteLiving,
           recording: data.recording,
           autoSwitch: data.autoSwitch,
           recordTime: data.recordTime,
@@ -547,13 +550,20 @@ class Main extends React.Component {
                   </Button>
                 </div>
                 */}
-
               </div>
-              <div style={{margin: ".4rem", display: "flex", alignItems: "center"}}>
-                <Switch
-                  disabled={this.props.activate !== 1 || this.state.onHandleSwitch}
-                  onClick={this.handleSwitch} checked={this.state.autoSwitch == 1}
-                  checkedChildren="自动模式" unCheckedChildren="手动模式" defaultChecked/>
+              <div style={{margin: ".1rem", display: "flex", alignItems: "center"}}>
+                <div className={styles.switch}>
+                  <Switch
+                    disabled={this.props.activate !== 1 || this.state.onHandleSwitch}
+                    onClick={this.handleSwitch} checked={this.state.autoSwitch == 1}
+                    checkedChildren="自动导播" unCheckedChildren="手动导播" defaultChecked/>
+
+                  <Switch
+                    disabled={this.props.activate !== 1 || this.state.recording == 1}
+                    onClick={this.handleResourceMode}
+                    checked={this.state.configs ? this.state.configs.misc.resource_mode == 1 : false}
+                    checkedChildren="资源模式" unCheckedChildren="普通模式" defaultChecked/>
+                </div>
                 <div style={{
                   textAlign: "center",
                   display: "inline-block",
@@ -931,12 +941,22 @@ class Main extends React.Component {
           <div style={{width: "13vw", minWidth: "113px"}}>
             <span>直播控制</span>
             <div>
-              <div>
+              <div className={styles.liveButton}>
                 <Button
                   disabled={this.state.onHandleLive}
                   onClick={this.handleLive}><i
                   className={this.state.living ? "iconfont icon-stop" : "iconfont icon-circle"}
-                  style={{color: this.state.living ? "#00FF00" : "red"}}/>{this.state.living ? "停止直播" : "开启直播"}
+                  size={"small"}
+                  style={{color: this.state.living ? "#00FF00" : "red"}}/>
+                  {this.state.living ? "停止直播" : "本地直播"}
+                </Button>
+                <Button
+                  disabled={this.state.onHandleRemoteLive}
+                  onClick={this.handleRemoteLiving}><i
+                  className={this.state.remoteLiving ? "iconfont icon-stop" : "iconfont icon-circle"}
+                  size={"small"}
+                  style={{color: this.state.remoteLiving ? "#00FF00" : "red"}}/>
+                  {this.state.remoteLiving ? "停止直播" : "远程直播"}
                 </Button>
               </div>
               <div style={{margin: ".4rem", display: "flex", alignItems: "center"}}>
@@ -1119,13 +1139,26 @@ class Main extends React.Component {
       }).catch(error => console.log(error));
     }
 
-
     setTimeout(() => {
       this.onHandleLive = false
       this.setState({onHandleLive: false})
     }, this.actionTimeout)
   }
 
+
+  handleRemoteLiving = () => {
+    if (this.onHandleLive) {
+      return;
+    }
+    this.onHandleLive = true
+    this.setState({onHandleLive: true})
+
+    let remoteLiving = this.state.remoteLiving === 1 ? 0 : 1;
+    axios.get(window.serverUrl + "main.php", {params: {action: "setRemoteLiving", remoteLiving}}).then(res => {
+      this.onHandleLive = false
+      this.setState({onHandleLive: false, remoteLiving})
+    })
+  }
 
   handleSectionTimeChange = (sectionTime) => {
     if (this.state.recording === 1) {
@@ -1149,6 +1182,14 @@ class Main extends React.Component {
     }
   }
 
+  handleResourceMode = () => {
+    let resource_mode = this.state.configs.misc.resource_mode == 0 ? 1 : 0;
+    axios.get(window.serverUrl + "main.php", {params: {action: "setResourceMode", resource_mode}}).then(() => {
+      let configs = this.state.configs;
+      configs.misc.resource_mode = resource_mode;
+      this.setState({configs})
+    })
+  }
 
   handleSwitch = () => {
     if (this.onHandleSwitch) {

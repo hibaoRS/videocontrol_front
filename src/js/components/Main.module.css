@@ -131,3 +131,16 @@
 .cameraControlButton:hover {
     background-color: white;
 }
+
+.switch{
+    height: 5.3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+.liveButton{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
