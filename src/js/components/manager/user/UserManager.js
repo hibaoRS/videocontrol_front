@@ -40,7 +40,7 @@ class UserManager extends React.PureComponent {
         title: '操作',
         key: "action",
         render: (text, record) => (
-            <Popconfirm title="确认删除该管理员?" onConfirm={this.delteManager.bind(this, record.id)} okText="确认"
+            <Popconfirm title="确认删除该管理员?" onConfirm={this.deleteManager.bind(this, record.id)} okText="确认"
                         cancelText="取消">
                 <a href="#">删除</a>
             </Popconfirm>
@@ -74,7 +74,7 @@ class UserManager extends React.PureComponent {
     }
 
 
-    delteManager = (id) => {
+    deleteManager = (id) => {
         axios.get(window.serverUrl + "manager.php", {params: {action: "delete", id}}).then((res) => {
             if (res.data.code === 1) {
                 this.getUsers()

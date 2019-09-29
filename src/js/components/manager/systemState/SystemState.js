@@ -224,7 +224,7 @@ class SystemState extends React.Component {
                         <div>设备序列号：{this.state.productId}</div>
                         <div>激活时间：{!this.props.activateTime || this.props.activateTime == 0 ? "无" : moment(parseInt(this.props.activateTime) * 1000).format("YYYY-MM-DD")}</div>
                         <div>有效期至：{!this.props.expiryTime || this.props.expiryTime == 0 ? "尚未激活" : this.props.expiryTime > 26000000000 ? "永久有效" : moment(parseInt(this.props.expiryTime) * 1000).format("YYYY-MM-DD")}</div>
-                        <div>硬件版本：v1.20</div>
+                        <div>硬件版本：v2.00</div>
                         <div>软件版本：{this.state.softwareVersion}</div>
 
                     </div>

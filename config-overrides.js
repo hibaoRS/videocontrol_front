@@ -14,8 +14,3 @@ module.exports = function override(config, env) {
     })(config, env);
     return config;
 };
-/*
-yarn start --scripts-version react-scripts-cssmodules
-yarn build --scripts-version react-scripts-cssmodules
-
-*/

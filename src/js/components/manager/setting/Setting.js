@@ -15,7 +15,7 @@ import {
   Upload,
   Input,
   Tabs,
-  Modal, InputNumber
+  Modal, InputNumber, Affix
 } from 'antd';
 import {initIsShowAppManage, setCurrModule} from "../../../reducers/AppReducer";
 import {userLogout} from "../../../reducers/UserReducer";
@@ -144,7 +144,7 @@ class Setting extends React.Component {
       case "7":
         return 6;
       case "8":
-        return 7;
+        return 6;
     }
   }
 
@@ -186,7 +186,7 @@ class Setting extends React.Component {
                   value={this.state.configs ? this.state.configs.video.config.normal_bitrate : ""}
                   step={1000}
                   min={1000}
-                  max={8000}
+                  max={6000}
                   onChange={val => {
                     let configs = this.state.configs
                     configs.video.config.normal_bitrate = val
@@ -229,7 +229,7 @@ class Setting extends React.Component {
                   value={this.state.configs ? this.state.configs.video.config.resource_bitrate : ""}
                   step={1000}
                   min={1000}
-                  max={4000}
+                  max={2000}
                   onChange={val => {
                     let configs = this.state.configs
                     configs.video.config.resource_bitrate = val
@@ -423,7 +423,7 @@ class Setting extends React.Component {
                   if (!this.state.configs || k > this.getResourceModeScreenLength() - 1) {
                     return;
                   }
-                  return <div>
+                  return <div key={k}>
                     <span>画面{k + 1}</span>
                     <div>
                       <Select disabled={this.state.disabled}
@@ -432,13 +432,6 @@ class Setting extends React.Component {
                               onChange={val => {
                                 let configs = this.state.configs;
                                 configs.video.record.mapping[k + ""] = +val;
-                                let mapping = configs.video.record.mapping;
-                                let mapArray = Object.keys(mapping).map(k => mapping[k]);
-                                let screenLength = this.getResourceModeScreenLength();
-                                if (new Set(mapArray.slice(0, screenLength)).size != screenLength) {
-                                  message.warn("拼接画面不能有相同场景");
-                                  return;
-                                }
                                 this.setState({configs})
                               }}>
                         {this.state.configOptions ? Object.entries(this.state.configOptions.scene).map((entry, index) =>
@@ -512,7 +505,7 @@ class Setting extends React.Component {
                     摄像头串口设备
                     <Popover content={(<div>用于控制摄像头</div>)}
                              placement="right">
-                    <Icon className={styles.icon} type="question-circle-o"/>
+                    <Icon className={styles.icon} type="question-circle-o" />
                     </Popover>
                     </span>
               <div>
@@ -540,7 +533,7 @@ class Setting extends React.Component {
                     跟踪主机串口设备
                     <Popover content={(<div>用于对接跟踪主机</div>)}
                              placement="right">
-                    <Icon className={styles.icon} type="question-circle-o"/>
+                    <Icon className={styles.icon} type="question-circle-o" />
                     </Popover>
                     </span>
               <div>
@@ -708,6 +701,100 @@ class Setting extends React.Component {
         </div>
 
 
+        <div className={styles.setting} id={"switch_cmd"}>
+          <div className={styles.title}>切换指令设置<a href={"#switch_cmd"}
+                                                 className={styles.anchor}>#</a></div>
+          <div className={styles.content}>
+
+            <div>
+              <span>板书特写</span>
+              <div>
+                <Input disabled={this.state.disabled}
+                       value={this.state.configs ? this.state.configs.trace.cmd.bb_fea + "" : ""}
+                       style={{width: this.selectWidth}}
+                       onChange={({target: {value: val}}) => {
+                         let configs = this.state.configs
+                         configs.trace.cmd.bb_fea = val
+                         this.setState({configs})
+                       }} />
+              </div>
+            </div>
+
+            <div>
+              <span>电脑画面</span>
+              <div>
+                <Input disabled={this.state.disabled}
+                       value={this.state.configs ? this.state.configs.trace.cmd.pc_capture + "" : ""}
+                       style={{width: this.selectWidth}}
+                       onChange={({target: {value: val}}) => {
+                         let configs = this.state.configs
+                         configs.trace.cmd.pc_capture = val
+                         this.setState({configs})
+                       }} />
+              </div>
+            </div>
+
+            <div>
+              <span>学生特写</span>
+              <div>
+                <Input disabled={this.state.disabled}
+                       value={this.state.configs ? this.state.configs.trace.cmd.stu_fea + "" : ""}
+                       style={{width: this.selectWidth}}
+                       onChange={({target: {value: val}}) => {
+                         let configs = this.state.configs
+                         configs.trace.cmd.stu_fea = val
+                         this.setState({configs})
+                       }} />
+              </div>
+            </div>
+
+            <div>
+              <span>学生全景</span>
+              <div>
+                <Input disabled={this.state.disabled}
+                       value={this.state.configs ? this.state.configs.trace.cmd.stu_full + "" : ""}
+                       style={{width: this.selectWidth}}
+                       onChange={({target: {value: val}}) => {
+                         let configs = this.state.configs
+                         configs.trace.cmd.stu_full = val
+                         this.setState({configs})
+                       }} />
+              </div>
+            </div>
+
+            <div>
+              <span>教师特写</span>
+              <div>
+                <Input disabled={this.state.disabled}
+                       value={this.state.configs ? this.state.configs.trace.cmd.tea_fea + "" : ""}
+                       style={{width: this.selectWidth}}
+                       onChange={({target: {value: val}}) => {
+                         let configs = this.state.configs
+                         configs.trace.cmd.tea_fea = val
+                         this.setState({configs})
+                       }} />
+              </div>
+            </div>
+
+            <div>
+              <span>教师全景</span>
+              <div>
+                <Input disabled={this.state.disabled}
+                       value={this.state.configs ? this.state.configs.trace.cmd.tea_full + "" : ""}
+                       style={{width: this.selectWidth}}
+                       onChange={({target: {value: val}}) => {
+                         let configs = this.state.configs
+                         configs.trace.cmd.tea_full = val
+                         this.setState({configs})
+                       }} />
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+
+
         <div className={styles.setting} id={"rtmp"}>
           <div className={styles.title}>RTMP直播设置<a href={"#rtmp"} className={styles.anchor}>#</a></div>
           <div className={styles.content}>
@@ -780,16 +867,16 @@ class Setting extends React.Component {
                   }}
                 >
                   <Button>
-                    <Icon type="upload"/>选择图片
+                    <Icon type="upload" />选择图片
                   </Button>
                 </Upload>
                 <img onClick={() => this.setState({previewVisible: true})}
                      src={this.state.configs ? window.serverUrl + this.state.configs.other.interact_live.picAddress + "?" + Math.random() : ""}
-                     style={{width: "200px", height: "120px"}}/>
+                     style={{width: "200px", height: "120px"}} />
                 <Modal visible={this.state.previewVisible} footer={null}
                        onCancel={() => this.setState({previewVisible: false})}>
                   <img alt="图片预览" style={{width: '100%'}}
-                       src={this.state.configs ? window.serverUrl + this.state.configs.other.interact_live.picAddress + "?" + Math.random() : ""}/>
+                       src={this.state.configs ? window.serverUrl + this.state.configs.other.interact_live.picAddress + "?" + Math.random() : ""} />
                 </Modal>
               </div>
             </div>
@@ -814,7 +901,7 @@ class Setting extends React.Component {
                     RTMP直播服务器
                     <Popover content={(<div>设置外部RTMP服务器地址</div>)}
                              placement="right">
-                    <Icon className={styles.icon} type="question-circle-o"/>
+                    <Icon className={styles.icon} type="question-circle-o" />
                     </Popover>
                     </span>
                   <div>
@@ -844,7 +931,7 @@ class Setting extends React.Component {
                                       this.setState({configs})
                                     }
                                   }}
-                                  placeholder="默认值rtmp://127.0.0.1/live"/>
+                                  placeholder="默认值rtmp://127.0.0.1/live" />
                   </div>
                 </div>
 
@@ -926,7 +1013,7 @@ class Setting extends React.Component {
                                this.setState({configs})
                              }
                            }}
-                           placeholder="默认值58.67.222.35"/>
+                           placeholder="默认值58.67.222.35" />
                   </div>
                 </div>
 
@@ -951,7 +1038,7 @@ class Setting extends React.Component {
                                this.setState({configs})
                              }
                            }}
-                           placeholder="默认值8080"/>
+                           placeholder="默认值8080" />
                   </div>
                 </div>
 
@@ -984,7 +1071,7 @@ class Setting extends React.Component {
 
                                     }
                                   }}
-                                  placeholder="默认值ftp://58.67.222.35"/>
+                                  placeholder="默认值ftp://58.67.222.35" />
                   </div>
                 </div>
 
@@ -1009,7 +1096,7 @@ class Setting extends React.Component {
                                this.setState({configs})
                              }
                            }}
-                           placeholder="默认值21"/>
+                           placeholder="默认值21" />
                   </div>
                 </div>
 
@@ -1034,7 +1121,7 @@ class Setting extends React.Component {
                                this.setState({configs})
                              }
                            }}
-                           placeholder="默认值vision_ftp"/>
+                           placeholder="默认值vision_ftp" />
                   </div>
                 </div>
 
@@ -1059,7 +1146,7 @@ class Setting extends React.Component {
                                this.setState({configs})
                              }
                            }}
-                           placeholder="默认值vision_upload"/>
+                           placeholder="默认值vision_upload" />
                   </div>
                 </div>
 
@@ -1103,7 +1190,7 @@ class Setting extends React.Component {
                     RTMP直播服务器
                     <Popover content={(<div>设置外部RTMP服务器地址</div>)}
                              placement="right">
-                    <Icon className={styles.icon} type="question-circle-o"/>
+                    <Icon className={styles.icon} type="question-circle-o" />
                     </Popover>
                     </span>
                   <div>
@@ -1133,7 +1220,7 @@ class Setting extends React.Component {
                                       this.setState({configs})
                                     }
                                   }}
-                                  placeholder="默认值rtmp://127.0.0.1/live"/>
+                                  placeholder="默认值rtmp://127.0.0.1/live" />
                   </div>
                 </div>
 
@@ -1215,7 +1302,7 @@ class Setting extends React.Component {
                                this.setState({configs})
                              }
                            }}
-                           placeholder="默认值58.67.222.35"/>
+                           placeholder="默认值58.67.222.35" />
                   </div>
                 </div>
 
@@ -1240,7 +1327,7 @@ class Setting extends React.Component {
                                this.setState({configs})
                              }
                            }}
-                           placeholder="默认值8080"/>
+                           placeholder="默认值8080" />
                   </div>
                 </div>
 
@@ -1273,7 +1360,7 @@ class Setting extends React.Component {
 
                                     }
                                   }}
-                                  placeholder="默认值ftp://58.67.222.35"/>
+                                  placeholder="默认值ftp://58.67.222.35" />
                   </div>
                 </div>
 
@@ -1298,7 +1385,7 @@ class Setting extends React.Component {
                                this.setState({configs})
                              }
                            }}
-                           placeholder="默认值21"/>
+                           placeholder="默认值21" />
                   </div>
                 </div>
 
@@ -1323,7 +1410,7 @@ class Setting extends React.Component {
                                this.setState({configs})
                              }
                            }}
-                           placeholder="默认值vision_ftp"/>
+                           placeholder="默认值vision_ftp" />
                   </div>
                 </div>
 
@@ -1348,7 +1435,7 @@ class Setting extends React.Component {
                                this.setState({configs})
                              }
                            }}
-                           placeholder="默认值vision_upload"/>
+                           placeholder="默认值vision_upload" />
                   </div>
                 </div>
 
@@ -1508,7 +1595,7 @@ class Setting extends React.Component {
                                 message.error("操作失败")
                               }
                             }).catch(e => console.log(e))
-                          }}/>
+                          }} />
                 </div>
               </div>
 
@@ -1540,7 +1627,7 @@ class Setting extends React.Component {
                                 message.error(res.data.data)
                               }
                             }).catch(e => console.log(e))
-                          }}/>
+                          }} />
                 </div>
               </div>
 
@@ -1548,7 +1635,7 @@ class Setting extends React.Component {
                     <span>主页悬浮面板宽度
                     <Popover content={(
                       <div>支持单位有px、rem、em、vw、vh，不支持百分比（下同）</div>)} placement="right">
-                    <Icon className={styles.icon} type="question-circle-o"/>
+                    <Icon className={styles.icon} type="question-circle-o" />
                     </Popover>
                     </span>
                 <div>
@@ -1587,7 +1674,7 @@ class Setting extends React.Component {
                              width: node.target.value
                            }
                          })}
-                         placeholder="默认值35rem"/>
+                         placeholder="默认值35rem" />
                 </div>
               </div>
 
@@ -1630,7 +1717,7 @@ class Setting extends React.Component {
                              height: node.target.value
                            }
                          })}
-                         placeholder="默认值80vh"/>
+                         placeholder="默认值80vh" />
                 </div>
               </div>
 
@@ -1639,7 +1726,7 @@ class Setting extends React.Component {
                 <div>
                   <Upload disabled={this.state.disabled} {...this.uploadProps}>
                     <Button>
-                      <Icon type="upload"/>点击选择文件上传
+                      <Icon type="upload" />点击选择文件上传
                     </Button>
                   </Upload>
                 </div>
@@ -1650,36 +1737,46 @@ class Setting extends React.Component {
         ) : ""}
 
 
-        <div className={styles.control}>
-          <Button disabled={this.state.disabled}
-                  onClick={this.fetchConfig}>放弃配置</Button>
-          <Button disabled={this.state.disabled} type="primary"
-                  onClick={this.handleSave}>保存配置</Button>
-          <Popconfirm placement="right" title={"确认恢复默认配置？注意此操作不可逆"}
-                      onConfirm={this.handleRestore}
-                      okText="是" cancelText="否">
-            <Button disabled={this.state.disabled} type={"danger"}
-            >恢复默认配置</Button>
-          </Popconfirm>
-        </div>
-
       </div>
 
 
       <div style={{margin: "0 2rem", float: "right"}}>
         <Anchor>
-          <Link href="#video" title="视频录制设置"/>
-          <Link href="#audio" title="音频设置"/>
-          <Link href="#serial" title="串口设置"/>
-          <Link href="#camera" title="摄像头地址设置"/>
-          <Link href="#rtmp" title=" RTMP&nbsp;直播设置"/>
-          <Link href="#interact_live" title="互动直播设置"/>
+          <Link href="#video" title="视频录制设置" />
+          <Link href="#audio" title="音频设置" />
+          <Link href="#serial" title="串口设置" />
+          <Link href="#camera" title="摄像头地址设置" />
+          <Link href="#swich_cmd" title="切换指令设置" />
+          <Link href="#rtmp" title=" RTMP&nbsp;直播设置" />
+          <Link href="#interact_live" title="互动直播设置" />
           {/*<Link href="#main_screen" title="本地监视器设置"/>*/}
-          <Link href="#misc" title="其他设置"/>
+          <Link href="#misc" title="其他设置" />
           {this.state.showControlAppManage === 1 ? (
-            <Link href="#appManage" title="应用管理面板控制设置"/>
+            <Link href="#appManage" title="应用管理面板控制设置" />
           ) : ""}
         </Anchor>
+        <Affix offsetTop={350}>
+
+          <div className={styles.control}>
+
+
+            <Button disabled={this.state.disabled} type="primary"
+                    onClick={this.handleSave}>保存配置</Button>
+
+
+            <Button disabled={this.state.disabled}
+                    onClick={this.fetchConfig}>放弃配置</Button>
+
+            <Popconfirm placement="right" title={"确认恢复默认配置？注意此操作不可逆"}
+                        onConfirm={this.handleRestore}
+                        okText="是" cancelText="否">
+              <Button disabled={this.state.disabled} type={"danger"}
+              >恢复默认配置</Button>
+            </Popconfirm>
+          </div>
+
+
+        </Affix>
       </div>
     </div>
   }
@@ -1693,6 +1790,24 @@ class Setting extends React.Component {
   }
 
   handleSave = () => {
+
+    //判断资源拼接模式是否有一致
+
+    let screenLength = this.getResourceModeScreenLength();
+    if (screenLength) {
+      let stateConfigs = this.state.configs;
+      let mapping = stateConfigs.video.record.mapping;
+      let mapArray = Object.keys(mapping).map(k => mapping[k]);
+
+      console.log(mapArray)
+      console.log(screenLength)
+
+      if (new Set(mapArray.slice(0, screenLength)).size != screenLength) {
+        message.warn("拼接画面不能有相同场景");
+        return;
+      }
+    }
+
 
     //判断摄像头设置是否相同
     if (!this.isAllDiff(this.object2Array(this.state.configs.camera))) {
@@ -1790,7 +1905,6 @@ class Setting extends React.Component {
       message.error("文件目录名不能包括以下字符： / \\ * ? < > | 空格");
       return false;
     }
-
   }
 
   isAllDiff = arr => {

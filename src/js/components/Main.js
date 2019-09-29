@@ -467,7 +467,7 @@ class Main extends React.Component {
       <div>
         <div className={styles.monitors}>
           {this.state.mainPanel.enabled == 1 ? (<div className={styles.menuContainer}>
-            <div className={styles.menu} onClick={this.handleMenuExpand}/>
+            <div className={styles.menu} onClick={this.handleMenuExpand} />
             <div
               style={{display: this.state.menuExpand ? "block" : "none"}}
               className={styles.menuContent}>
@@ -476,7 +476,7 @@ class Main extends React.Component {
                   width: this.state.mainPanel.width,
                   height: this.state.mainPanel.height
                 }}>
-                <div dangerouslySetInnerHTML={{__html: this.state.html}}/>
+                <div dangerouslySetInnerHTML={{__html: this.state.html}} />
               </InfiniteScroll>
             </div>
           </div>) : ""}
@@ -504,12 +504,12 @@ class Main extends React.Component {
                       <Input
                         onChange={this.changeStandbyUrls.bind(this, standbyIndex)}
                         value={this.state.newStandbyUrls[standbyIndex]} placeholder={"请输入备播url"}
-                        style={{width: "9vw", height: "20px"}}/>
+                        style={{width: "9vw", height: "20px"}} />
                       <Button onClick={this.standbyPlay.bind(this, standbyIndex)}
                               style={{width: "45px", height: "20px"}}
                               size={"small"}>播放</Button>
                       <Icon onClick={this.closeStandby.bind(this, standbyIndex)} type="close"
-                            className={styles.hideStandby}/>
+                            className={styles.hideStandby} />
                     </div>
                     : ""}
                 </div>
@@ -520,7 +520,7 @@ class Main extends React.Component {
                   <VideoPlayer
                     ref={isStandby ? this.setStandbyPlayer.bind(this, standbyIndex) : undefined}
                     onClick={this.switchMonitorMain} index={i}
-                    url={isStandby && !!this.state.standbyUrls[standbyIndex] ? this.state.standbyUrls[standbyIndex] : this.urls[i]}/> : ""}
+                    url={isStandby && !!this.state.standbyUrls[standbyIndex] ? this.state.standbyUrls[standbyIndex] : this.urls[i]} /> : ""}
               </div>
             ) : ""
           })}
@@ -534,7 +534,7 @@ class Main extends React.Component {
                   <Button disabled={this.props.activate !== 1 || this.state.onHandleRecord}
                           onClick={this.handleRecord}>
                     <i className={this.state.recording ? "iconfont icon-stop" : "iconfont icon-circle"}
-                       style={{color: this.state.recording ? "#00FF00" : "red"}}/>
+                       style={{color: this.state.recording ? "#00FF00" : "red"}} />
                     &nbsp;&nbsp;{this.state.recording ? "停止录制" : "开始录制"}
                   </Button>
                 </div>
@@ -556,13 +556,13 @@ class Main extends React.Component {
                   <Switch
                     disabled={this.props.activate !== 1 || this.state.onHandleSwitch}
                     onClick={this.handleSwitch} checked={this.state.autoSwitch == 1}
-                    checkedChildren="自动导播" unCheckedChildren="手动导播" defaultChecked/>
+                    checkedChildren="自动导播" unCheckedChildren="手动导播" defaultChecked />
 
                   <Switch
                     disabled={this.props.activate !== 1 || this.state.recording == 1}
                     onClick={this.handleResourceMode}
                     checked={this.state.configs ? this.state.configs.misc.resource_mode == 1 : false}
-                    checkedChildren="资源模式" unCheckedChildren="普通模式" defaultChecked/>
+                    checkedChildren="资源模式" unCheckedChildren="普通模式" defaultChecked />
                 </div>
                 <div style={{
                   textAlign: "center",
@@ -570,7 +570,7 @@ class Main extends React.Component {
                   margin: ".2rem 0",
                   fontSize: "1.6rem"
                 }}>
-                  已录制时间<br/>{this.state.recording ?
+                  已录制时间<br />{this.state.recording ?
                   this.getTimeString(this.state.recordedTime)
                   : "00:00:00"}
                 </div>
@@ -595,7 +595,7 @@ class Main extends React.Component {
                   onMouseDown={this.startCameraMove.bind(this, "2")}
                   onMouseUp={this.stopCameraMove}
                   className={styles.cameraControlButton}
-                  icon="caret-up"/>
+                  icon="caret-up" />
                 <div>
                   <Button
                     shape="circle"
@@ -604,7 +604,7 @@ class Main extends React.Component {
                     className={styles.cameraControlButton}
                     onMouseDown={this.startCameraMove.bind(this, "4")}
                     onMouseUp={this.stopCameraMove}
-                    icon="caret-left"/>
+                    icon="caret-left" />
                   <Button
                     shape="circle"
                     style={{border: "none"}}
@@ -640,7 +640,7 @@ class Main extends React.Component {
                         }
                       }).catch(error => console.log(error));
                     }}
-                    icon="reload"/>
+                    icon="reload" />
                   <Button
                     shape="circle"
                     style={{border: "none"}}
@@ -648,7 +648,7 @@ class Main extends React.Component {
                     className={styles.cameraControlButton}
                     onMouseDown={this.startCameraMove.bind(this, "5")}
                     onMouseUp={this.stopCameraMove}
-                    icon="caret-right"/>
+                    icon="caret-right" />
                 </div>
                 <Button
                   shape="circle"
@@ -657,7 +657,7 @@ class Main extends React.Component {
                   className={styles.cameraControlButton}
                   onMouseDown={this.startCameraMove.bind(this, "3")}
                   onMouseUp={this.stopCameraMove}
-                  icon="caret-down"/>
+                  icon="caret-down" />
               </div>
 
               <div style={{
@@ -744,7 +744,7 @@ class Main extends React.Component {
                         }
                       }).catch(error => console.log(error));
                     }}
-                    style={{width: "90px", margin: "0", marginLeft: "8px"}}/>
+                    style={{width: "90px", margin: "0", marginLeft: "8px"}} />
                 </div>
                 <div style={{
                   display: "flex", flexDirection: "row", alignItems: "center"
@@ -785,7 +785,7 @@ class Main extends React.Component {
                       }).catch(error => console.log(error));
                     }}
 
-                    style={{width: "90px", margin: "0", marginLeft: "8px"}}/>
+                    style={{width: "90px", margin: "0", marginLeft: "8px"}} />
                 </div>
               </div>
 
@@ -908,7 +908,7 @@ class Main extends React.Component {
                            this.setState({recordName: val})
                          }
                        }}
-                       placeholder="默认值课程"/>
+                       placeholder="默认值课程" />
               </div>
 
 
@@ -931,7 +931,7 @@ class Main extends React.Component {
                                  }
                                }
                              }
-                             value={this.state.sectionTime}/>分钟
+                             value={this.state.sectionTime} />分钟
               </div>
 
             </div>
@@ -947,7 +947,7 @@ class Main extends React.Component {
                   onClick={this.handleLive}><i
                   className={this.state.living ? "iconfont icon-stop" : "iconfont icon-circle"}
                   size={"small"}
-                  style={{color: this.state.living ? "#00FF00" : "red"}}/>
+                  style={{color: this.state.living ? "#00FF00" : "red"}} />
                   {this.state.living ? "停止直播" : "本地直播"}
                 </Button>
                 <Button
@@ -955,7 +955,7 @@ class Main extends React.Component {
                   onClick={this.handleRemoteLiving}><i
                   className={this.state.remoteLiving ? "iconfont icon-stop" : "iconfont icon-circle"}
                   size={"small"}
-                  style={{color: this.state.remoteLiving ? "#00FF00" : "red"}}/>
+                  style={{color: this.state.remoteLiving ? "#00FF00" : "red"}} />
                   {this.state.remoteLiving ? "停止直播" : "远程直播"}
                 </Button>
               </div>
@@ -966,7 +966,7 @@ class Main extends React.Component {
                   margin: ".2rem 0",
                   fontSize: "1.6rem"
                 }}>
-                  已直播时间<br/>{this.state.living ?
+                  已直播时间<br />{this.state.living ?
                   this.getTimeString(this.state.livedTime)
                   : "00:00:00"}
                 </div>
@@ -1110,9 +1110,6 @@ class Main extends React.Component {
   }
 
   handleLive = () => {
-    if (this.onHandleLive) {
-      return;
-    }
     this.onHandleLive = true
     this.setState({onHandleLive: true})
     if (this.state.living) {
@@ -1122,7 +1119,10 @@ class Main extends React.Component {
         } else {
           message.error("操作失败");
         }
-      }).catch(error => console.log(error));
+      }).catch(error => console.log(error)).finally(() => {
+        this.onHandleLive = false
+        this.setState({onHandleLive: false})
+      });
     } else {
       axios.get(window.serverUrl + "main.php", {
         params: {
@@ -1132,17 +1132,20 @@ class Main extends React.Component {
       }).then(res => {
         if (res.data.code) {
           // this.refresh();
-          this.getSystemState();
+          setTimeout(() => {
+            this.getSystemState();
+            this.onHandleLive = false
+            this.setState({onHandleLive: false})
+          }, 2000)
         } else {
           message.error("操作失败");
+          this.onHandleLive = false
+          this.setState({onHandleLive: false})
         }
       }).catch(error => console.log(error));
     }
 
-    setTimeout(() => {
-      this.onHandleLive = false
-      this.setState({onHandleLive: false})
-    }, this.actionTimeout)
+
   }
 
 
@@ -1188,6 +1191,12 @@ class Main extends React.Component {
       let configs = this.state.configs;
       configs.misc.resource_mode = resource_mode;
       this.setState({configs})
+      if (this.state.living) {
+        this.handleLive()
+        setTimeout(() => {
+          this.handleLive()
+        }, 500)
+      }
     })
   }
 
