@@ -146,7 +146,9 @@ class Login extends React.PureComponent {
                     <div>
                         <Button onClick={this.handleLogin}>登录</Button>
                     </div>
-
+                    <div style={{marginTop:"1rem"}}>
+                        <a href={"./mini/index.html"}>简易导播端</a>
+                    </div>
 
                     <Modal bsSize={"sm"} show={this.state.showModal} onHide={this.closeMessage}>
                         <Modal.Header closeButton>

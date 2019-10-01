@@ -308,7 +308,7 @@ class Setting extends React.Component {
         </div>
 
 
-        <Tabs activeKey={this.state.configs ? this.state.configs.video.record.type : "0"}
+        <Tabs activeKey={this.state.configs ? this.state.configs.video.record.type + "" : "0"}
               onChange={k => {
                 let configs = this.state.configs;
                 configs.video.record.type = k;

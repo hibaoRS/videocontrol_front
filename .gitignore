@@ -3,6 +3,11 @@
 # dependencies
 /node_modules
 
+/html
+/html.zip
+/mini.zip
+/build.zip
+
 # testing
 /coverage
 
