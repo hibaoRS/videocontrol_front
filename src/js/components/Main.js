@@ -499,6 +499,11 @@ class Main extends React.Component {
                   onMouseLeave={isStandby ? this.hideStandby.bind(this, standbyIndex, false) : undefined}
                   className={styles.title}>
                   <div>{titleName}</div>
+                  <div>{titleName === "主播" && this.state.configs ? "[" +
+                    (this.state.configs.video.record.type == '0' ?
+                      '普通模式' :
+                      (this.state.configs.video.record.type == '1' ? '画中画模式' : '拼接模式'))
+                    + "]" : ""}</div>
                   {titleName === "备播" && this.state.showStandbys[standbyIndex] === true ?
                     <div style={{marginLeft: "3px", display: "flex", flexDirection: "row"}}>
                       <Input
@@ -1195,12 +1200,12 @@ class Main extends React.Component {
       let configs = this.state.configs;
       configs.misc.resource_mode = resource_mode;
       this.setState({configs})
-      // if (this.state.living) {
-      //   this.handleLive()
-      //   setTimeout(() => {
-      //     this.handleLive()
-      //   }, 500)
-      // }
+      if (this.state.living) {
+        this.handleLive()
+        setTimeout(() => {
+          this.handleLive()
+        }, 500)
+      }
     })
   }
 

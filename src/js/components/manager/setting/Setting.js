@@ -179,7 +179,7 @@ class Setting extends React.Component {
               </div>
             </div>
             <div>
-              <span>普通模式录制码率大小</span>
+              <span>普通模式录制码率</span>
               <div>
                 <InputNumber
                   disabled={this.state.disabled} style={{width: this.selectWidth}}
@@ -194,7 +194,8 @@ class Setting extends React.Component {
                       configs: configs
                     })
                   }}
-                  placeholder="请输入码率大小"
+                  formatter={val => val + "k"}
+                  placeholder="请输入码率"
                 />
               </div>
             </div>
@@ -222,14 +223,14 @@ class Setting extends React.Component {
               </div>
             </div>
             <div>
-              <span>资源模式录制码率大小</span>
+              <span>资源模式录制码率</span>
               <div>
                 <InputNumber
                   disabled={this.state.disabled} style={{width: this.selectWidth}}
                   value={this.state.configs ? this.state.configs.video.config.resource_bitrate : ""}
                   step={1000}
                   min={1000}
-                  max={2000}
+                  max={3000}
                   onChange={val => {
                     let configs = this.state.configs
                     configs.video.config.resource_bitrate = val
@@ -237,13 +238,14 @@ class Setting extends React.Component {
                       configs: configs
                     })
                   }}
-                  placeholder="请输入码率大小"
+                  formatter={val => val + "k"}
+                  placeholder="请输入码率"
                 />
               </div>
             </div>
 
             <div>
-              <span>直播分辨率</span>
+              <span>普通模式直播分辨率</span>
               <div>
                 <Select
                   disabled={this.state.disabled}
@@ -265,14 +267,14 @@ class Setting extends React.Component {
               </div>
             </div>
             <div>
-              <span>直播码率大小</span>
+              <span>普通模式直播码率</span>
               <div>
                 <InputNumber
                   disabled={this.state.disabled} style={{width: this.selectWidth}}
                   value={this.state.configs ? this.state.configs.video.config.live_bitrate : ""}
                   step={1000}
                   min={1000}
-                  max={4000}
+                  max={3000}
                   onChange={val => {
                     let configs = this.state.configs
                     configs.video.config.live_bitrate = val
@@ -280,14 +282,15 @@ class Setting extends React.Component {
                       configs: configs
                     })
                   }}
-                  placeholder="请输入码率大小"
+                  formatter={val => val + "k"}
+                  placeholder="请输入码率"
                 />
               </div>
             </div>
 
 
             <div>
-              <span>教师端采集画面接口类型</span>
+              <span>教师端采集画面接口</span>
               <div>
                 <Select disabled={this.state.disabled}
                         value={this.state.configs ? this.state.configs.video.adv7842_type + "" : ""}
@@ -327,7 +330,7 @@ class Setting extends React.Component {
                 }
                 this.setState({configs})
               }}>
-          <TabPane tab="普通录制模式" key="0">
+          <TabPane tab="普通画面模式" key="0">
             <div className={styles.setting}>
               <div className={styles.content}>
                 <div>无需配置</div>
@@ -397,7 +400,7 @@ class Setting extends React.Component {
             </div>
 
           </TabPane>
-          <TabPane tab="资源模式" key="2">
+          <TabPane tab="拼接模式" key="2">
             <div className={styles.setting}>
               <div className={styles.content}>
 
@@ -452,7 +455,7 @@ class Setting extends React.Component {
 
         <div className={styles.setting} id={"resource_mode"}>
           <div className={styles.title}>资源模式录制设置<a href={"#resource_mode"}
-                                                 className={styles.anchor}>#</a></div>
+                                                   className={styles.anchor}>#</a></div>
           <div className={styles.content}>
 
 

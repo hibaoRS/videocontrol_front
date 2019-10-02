@@ -24,9 +24,7 @@ class Flv extends React.PureComponent {
         }
     }
 
-    componentDidMount() {
-        this.cleanBuff = setInterval(this.jumpToEndBuffer, 3 * 60 * 1000)
-    }
+
 
     componentWillUnmount() {
         if (this.cleanBuff) {
@@ -67,6 +65,7 @@ class Flv extends React.PureComponent {
             }, this.props.config)
             flvPlayer.attachMediaElement(this.video);
             flvPlayer.load()
+            flvPlayer.play()
             this.setState({flvPlayer})
             flvPlayer.on(flvjs.Events.ERROR, this.destroyPlayer)
             setTimeout(this.jumpToEndBuffer, 3000);
@@ -74,16 +73,20 @@ class Flv extends React.PureComponent {
     }
 
 
+    componentDidMount() {
+        this.cleanBuff = setInterval(this.jumpToEndBuffer, 3 * 60 * 1000)
+    }
+
     jumpToEndBuffer = () => {
         if (this.video) {
             let buffered = this.video.buffered
             if (buffered.length > 0) {
                 let end = buffered.end(0)
-                // console.log("end - this.video.currentTime :", end - this.video.currentTime)
                 if (end - this.video.currentTime > 0.15) {
                     this.video.currentTime = end - 0.1
                 }
             }
+            this.state.flvPlayer.play()
         }
     }
 
