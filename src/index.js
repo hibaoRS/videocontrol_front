@@ -22,10 +22,10 @@ yarn build --scripts-version react-scripts-cssmodules
 
 */
 
-window.serverUrl = "/videocontrol/";
-window.videoUrl = window.location.host + "/disk/videos/";
-// window.serverUrl = "http://127.0.0.1/php/videocontrol_back/";
-// window.videoUrl = "http://127.0.0.1/php/videocontrol_back/videos";
+// window.serverUrl = "/videocontrol/";
+// window.videoUrl = window.location.host + "/disk/videos/";
+window.serverUrl = "http://127.0.0.1/php/videocontrol_back/";
+window.videoUrl = "http://127.0.0.1/php/videocontrol_back/videos";
 
 // window.serverUrl = "http://192.168.43.242/videocontrol/";
 // window.serverUrl = "http://192.168.1.100/videocontrol/";

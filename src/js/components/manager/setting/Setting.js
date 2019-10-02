@@ -450,6 +450,37 @@ class Setting extends React.Component {
         </Tabs>
 
 
+        <div className={styles.setting} id={"resource_mode"}>
+          <div className={styles.title}>资源模式录制设置<a href={"#resource_mode"}
+                                                 className={styles.anchor}>#</a></div>
+          <div className={styles.content}>
+
+
+            {Array.from({length: 4}, (v, i) => i).map(k => {
+              return <div key={k}>
+                <span>录制路{k + 1}</span>
+                <div>
+                  <Select disabled={this.state.disabled}
+                          value={this.state.configs ? this.state.configs.video.record.record_route[k + ""] + "" : ""}
+                          style={{width: this.selectWidth}}
+                          onChange={val => {
+                            let configs = this.state.configs;
+                            configs.video.record.record_route[k + ""] = +val;
+                            this.setState({configs})
+                          }}>
+                    <Option key={7}>无</Option>
+
+                    {this.state.configOptions ? Object.entries(this.state.configOptions.scene).map((entry, index) =>
+                      <Option key={entry[1]}>{entry[0]}</Option>
+                    ) : ""}
+                  </Select>
+                </div>
+              </div>;
+            })}
+          </div>
+        </div>
+
+
         <div className={styles.setting} id={"audio"}>
           <div className={styles.title}>音频设置<a href={"#audio"}
                                                className={styles.anchor}>#</a></div>
@@ -1743,6 +1774,7 @@ class Setting extends React.Component {
       <div style={{margin: "0 2rem", float: "right"}}>
         <Anchor>
           <Link href="#video" title="视频录制设置" />
+          <Link href="#resource_mode" title="资源模式录制设置" />
           <Link href="#audio" title="音频设置" />
           <Link href="#serial" title="串口设置" />
           <Link href="#camera" title="摄像头地址设置" />

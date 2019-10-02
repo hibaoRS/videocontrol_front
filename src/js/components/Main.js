@@ -1079,9 +1079,14 @@ class Main extends React.Component {
     this.setState({onHandleRecord: true})
 
     if (this.state.recording) {
+      console.log(this.state.recordedTime)
+      if (this.state.recordedTime > 1000 * 60 * 60) {
+        message.warn("录制时间已超过一个小时，正在生成录制视频，请耐心等待1-2分钟")
+      }
       axios.get(window.serverUrl + "main.php", {params: {action: "stopRecord"}}).then(res => {
         if (res.data.code) {
           this.getSystemState();
+          this.updateRecordState()
         } else {
           message.error("操作失败");
         }
@@ -1095,18 +1100,17 @@ class Main extends React.Component {
       }).then(res => {
         if (res.data.code) {
           this.getSystemState();
+          this.updateRecordState()
         } else {
           message.error("操作失败");
         }
       }).catch(error => console.log(error));
     }
+  }
 
-
-    setTimeout(() => {
-      this.onHandleRecord = false
-      this.setState({onHandleRecord: false})
-    }, this.actionTimeout)
-
+  updateRecordState = () => {
+    this.onHandleRecord = false
+    this.setState({onHandleRecord: false})
   }
 
   handleLive = () => {
@@ -1191,12 +1195,12 @@ class Main extends React.Component {
       let configs = this.state.configs;
       configs.misc.resource_mode = resource_mode;
       this.setState({configs})
-      if (this.state.living) {
-        this.handleLive()
-        setTimeout(() => {
-          this.handleLive()
-        }, 500)
-      }
+      // if (this.state.living) {
+      //   this.handleLive()
+      //   setTimeout(() => {
+      //     this.handleLive()
+      //   }, 500)
+      // }
     })
   }
 
