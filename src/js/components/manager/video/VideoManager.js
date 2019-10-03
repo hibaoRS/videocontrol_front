@@ -57,6 +57,7 @@ class VideoManager extends React.Component {
 
   openVideo = (relativeUrl) => {
     this.setState({src: window.location.protocol + "//" + window.videoUrl + relativeUrl})
+    // this.setState({src: window.location.protocol + "//" + window.videoPreviewUrl + relativeUrl})
     // console.log(relativeUrl)
     // this.setState({src: "http://192.168.1.100/videocontrol/videos/" + relativeUrl})
     // this.setState({src:"http://192.168.1.1000/disk" + relativeUrl})
@@ -102,6 +103,8 @@ class VideoManager extends React.Component {
                   onClick={() => {
                     if (this.state.liveState.recording) {
                       message.warn("请在停止录制后再进行点播")
+                    } else if (record.size.endsWith("G") && (+(record.size.replace("G", ""))) > 2) {
+                      message.warn("文件大于2G，点播失败，请下载后再播放")
                     } else {
                       this.openVideo(record.relativePath)
                     }

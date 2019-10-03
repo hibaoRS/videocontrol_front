@@ -17,7 +17,7 @@ export default class VideoPlayer extends React.PureComponent {
                 videoProps={{
                     poster: require("../../../static/images/nosignal.png"),
                     autoPlay: "autoplay",
-                    // muted: "muted",
+                    muted: "muted",
                 }}
                 style={{width: "100%", height: "100%", objectFit: "fill"}}
                 flvConfig={{
@@ -30,9 +30,9 @@ export default class VideoPlayer extends React.PureComponent {
                 }}
                 config={{
                     fixAudioTimestampGap: false,
-                    enableWorker: false,
+                    enableWorker: true,
                     enableStashBuffer: true,
-                    stashInitialSize: 300,
+                    stashInitialSize: this.props.url.endsWith("6.flv") ? 2048 : 128,
                     autoCleanupSourceBuffer: true
                 }}
 

@@ -32,26 +32,27 @@ window.videoUrl = window.location.host + "/disk/videos/";
 // window.serverUrl = "http://192.168.1.222/videocontrol/";
 // window.serverUrl = "http://192.168.2.162/videocontrol/";
 // window.serverUrl = "http://127.0.0.1/videocontrol/";
+window.videoPreviewUrl = window.location.host + window.serverUrl + "other.php?action=download&path=/media/disk/videos/";
 
 ReactDOM.render(
-    // <Reflv
-    //     url={`http://192.168.1.222/disk/videos/course/365.mp4`}
-    //     // url={`http://192.168.1.222:8080/live/1.flv`}
-    //     type="mp4"
-    //     cors
-    //     hasAudio={true}
-    //     hasVideo={true}
-    //     config={{
-    //         enableWorker: false,
-    //         enableStashBuffer: true,
-    //     }}
-    // />
-    <Provider store={store}>
-        <BrowserRouter>
-            <LocaleProvider locale={zhCN}>
-                <App/>
-            </LocaleProvider>
-        </BrowserRouter>
-    </Provider>
-    , document.getElementById('root'));
+  // <Reflv
+  //     url={`http://192.168.1.222/disk/videos/course/365.mp4`}
+  //     // url={`http://192.168.1.222:8080/live/1.flv`}
+  //     type="mp4"
+  //     cors
+  //     hasAudio={true}
+  //     hasVideo={true}
+  //     config={{
+  //         enableWorker: false,
+  //         enableStashBuffer: true,
+  //     }}
+  // />
+  <Provider store={store}>
+    <BrowserRouter>
+      <LocaleProvider locale={zhCN}>
+        <App />
+      </LocaleProvider>
+    </BrowserRouter>
+  </Provider>
+  , document.getElementById('root'));
 registerServiceWorker();

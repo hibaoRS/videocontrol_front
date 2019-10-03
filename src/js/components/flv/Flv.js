@@ -39,9 +39,11 @@ class Flv extends React.PureComponent {
      */
     destroyPlayer = () => {
         if (this.state.flvPlayer) {
+            this.state.flvPlayer.pause();
             this.state.flvPlayer.unload();
             this.state.flvPlayer.detachMediaElement();
-            this.state.flvPlayer.destroy()
+            this.state.flvPlayer.destroy();
+            this.video.pause();
             this.setState({flvPlayer: null})
         }
     }
@@ -64,11 +66,13 @@ class Flv extends React.PureComponent {
                 url: url ? url : this.props.flvConfig.url
             }, this.props.config)
             flvPlayer.attachMediaElement(this.video);
-            flvPlayer.load()
-            flvPlayer.play()
+            flvPlayer.load();
+            flvPlayer.play();
+            flvPlayer.play();
+            this.video.play()	;
             this.setState({flvPlayer})
             flvPlayer.on(flvjs.Events.ERROR, this.destroyPlayer)
-            setTimeout(this.jumpToEndBuffer, 3000);
+            setTimeout(this.jumpToEndBuffer, 5000);
         }
     }
 
@@ -78,15 +82,22 @@ class Flv extends React.PureComponent {
     }
 
     jumpToEndBuffer = () => {
+        if(this.props.flvConfig.url.endsWith("6.flv")){
+            return;
+        }
         if (this.video) {
             let buffered = this.video.buffered
             if (buffered.length > 0) {
                 let end = buffered.end(0)
-                if (end - this.video.currentTime > 0.15) {
-                    this.video.currentTime = end - 0.1
+                if (end - this.video.currentTime >= 3) {
+                    this.video.currentTime = end - 3
                 }
             }
-            this.state.flvPlayer.play()
+            setTimeout(()=>{
+                if(this.state.flvPlayer){
+                    this.state.flvPlayer.play()
+                }
+            },500)
         }
     }
 

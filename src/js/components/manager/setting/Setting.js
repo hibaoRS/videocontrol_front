@@ -230,7 +230,7 @@ class Setting extends React.Component {
                   value={this.state.configs ? this.state.configs.video.config.resource_bitrate : ""}
                   step={1000}
                   min={1000}
-                  max={3000}
+                  max={2000}
                   onChange={val => {
                     let configs = this.state.configs
                     configs.video.config.resource_bitrate = val
@@ -274,7 +274,7 @@ class Setting extends React.Component {
                   value={this.state.configs ? this.state.configs.video.config.live_bitrate : ""}
                   step={1000}
                   min={1000}
-                  max={3000}
+                  max={2000}
                   onChange={val => {
                     let configs = this.state.configs
                     configs.video.config.live_bitrate = val
